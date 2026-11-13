@@ -1,0 +1,108 @@
+<?php
+// Add real URLs here; links with an empty URL are not rendered.
+$social_links = array(
+    'Facebook' => '',
+    'YouTube'  => '',
+);
+?>
+<footer class="site-footer">
+
+    <div class="footer-main">
+        <div class="footer-inner">
+
+            <div class="footer-grid">
+
+                <section class="footer-column footer-column--contact" aria-labelledby="footer-contact">
+                    <h2 id="footer-contact">Sazinieties ar mums</h2>
+                    <a class="footer-phone" href="tel:+37163622805">+371 636 22805</a>
+                    <a href="mailto:jaunrades.nams@ventspils.lv">jaunrades.nams@ventspils.lv</a>
+                    <a href="mailto:planetarijs.observatorija@ventspils.lv">planetarijs.observatorija@ventspils.lv</a>
+                </section>
+
+                <section class="footer-column" aria-labelledby="footer-address">
+                    <h2 id="footer-address">Mūsu adrese</h2>
+                    <address>
+                        Maiznieku iela 11,<br>
+                        Ventspils, LV-3601
+                    </address>
+                </section>
+
+
+            </div>
+
+            <div class="footer-partners">
+                <img
+                    src="<?php echo esc_url( get_template_directory_uri() . '/assets/ventspils.png' ); ?>"
+                    alt="Ventspils"
+                    loading="lazy"
+                >
+                <img
+                    src="<?php echo esc_url( get_template_directory_uri() . '/assets/europe.png' ); ?>"
+                    alt="Eiropas Savienība"
+                    loading="lazy"
+                >
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="footer-bottom-container">
+
+            <p>© <?php echo esc_html( wp_date( 'Y' ) ); ?> Ventspils Jaunrades nams</p>
+
+            <ul class="footer-legal">
+                <li><a href="<?php echo esc_url( home_url( '/pieklistamibas-pazinojums/' ) ); ?>">Piekļūstamības paziņojums</a></li>
+                <?php foreach ( $social_links as $name => $url ) : if ( ! $url ) { continue; } ?>
+                    <li>
+                        <a href="<?php echo esc_url( $url ); ?>" rel="noopener" target="_blank">
+                            <?php echo esc_html( $name ); ?>
+                            <span class="screen-reader-text">(atveras jaunā cilnē)</span>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+
+        </div>
+    </div>
+
+</footer>
+
+<script>
+(function () {
+    var toggle = document.querySelector('.menu-toggle');
+    var nav = document.getElementById('main-navigation');
+    if (!toggle || !nav) { return; }
+
+    function setOpen(open) {
+        nav.classList.toggle('is-open', open);
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        toggle.setAttribute('aria-label', open ? 'Aizvērt navigāciju' : 'Atvērt navigāciju');
+    }
+
+    toggle.addEventListener('click', function () {
+        setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && nav.classList.contains('is-open')) {
+            setOpen(false);
+            toggle.focus();
+        }
+    });
+
+    document.addEventListener('click', function (e) {
+        if (nav.classList.contains('is-open') && !nav.contains(e.target) && !toggle.contains(e.target)) {
+            setOpen(false);
+        }
+    });
+
+    window.matchMedia('(min-width: 769px)').addEventListener('change', function (m) {
+        if (m.matches) { setOpen(false); }
+    });
+})();
+</script>
+
+<?php wp_footer(); ?>
+</body>
+</html>
