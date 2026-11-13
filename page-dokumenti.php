@@ -1,15 +1,11 @@
 <?php
 /**
  * Template Name: Resursi
- * Description: Metodiskie materiāli, dokumenti un informācija pedagogiem.
- *
- * Teacher auth uses an HMAC-signed cookie (no PHP session) so it works with
- * page caching and cannot be forged. Nonce + rate-limit protect the form.
  */
 
-// ---------------------------------------------------------------------------
-// Teacher password — override in wp-config.php if you want to change it.
-// ---------------------------------------------------------------------------
+
+
+
 if ( ! defined( 'JN_TEACHER_PASSWORD' ) ) {
     define( 'JN_TEACHER_PASSWORD', 'venta' );
 }
@@ -17,9 +13,9 @@ if ( ! defined( 'JN_TEACHER_TTL' ) ) {
     define( 'JN_TEACHER_TTL', 8 * HOUR_IN_SECONDS );
 }
 
-// ---------------------------------------------------------------------------
-// Signed-cookie auth (cache-safe)
-// ---------------------------------------------------------------------------
+
+
+
 function jn_teacher_cookie_name(): string {
     return 'jn_teacher_auth';
 }
@@ -65,9 +61,9 @@ function jn_teacher_rate_key(): string {
     return 'jn_teacher_rl_' . md5( $ip );
 }
 
-// ---------------------------------------------------------------------------
-// Handle login / logout
-// ---------------------------------------------------------------------------
+
+
+
 $is_auth   = jn_teacher_verify();
 $error_msg = '';
 
@@ -95,9 +91,9 @@ if ( isset( $_GET['logout'] ) ) {
     exit;
 }
 
-// ---------------------------------------------------------------------------
-// Teacher content (API with static fallback)
-// ---------------------------------------------------------------------------
+
+
+
 $teacher_content = '';
 if ( $is_auth ) {
     $page = jn_api_cache(
@@ -118,7 +114,7 @@ if ( $is_auth ) {
             vai ierakstot adresi <strong>ej.uz/VJNkalendars</strong></p>
         <h3><strong>Faili skolotājiem:</strong></h3>
         <a href="https://jaunradesnams.lv/wp-content/uploads/darba_kartibas_noteikumi_2026.pdf" class="teacher-btn" target="_blank" rel="noopener">📄 Darba kārtības noteikumi</a>
-        <p style="margin-top: 24px;"><strong>Iesniegums audzēkņu uzņemšanai u.c. dokumenti</strong>
+        <p class="mt-24"><strong>Iesniegums audzēkņu uzņemšanai u.c. dokumenti</strong>
             <a href="<?php echo esc_url( home_url( '/jaunrades-nams/dokumenti/' ) ); ?>">šeit</a></p>
         <h3><strong>Pieprasījums ārpusnodarbību pasākumam:</strong></h3>
         <p><em>Šie abi dokumenti ir saistoši pedagogiem, kuri vēlas rīkot pasākumus Jaunrades namā un arī ārpus tā. Tehniskais pieteikums jāiesniedz ne vēlāk kā mēnesi pirms pasākuma, bet programmas pieteikums – ne vēlāk kā trīs darba dienas pēc pasākuma.</em></p>
@@ -133,9 +129,9 @@ if ( $is_auth ) {
     }
 }
 
-// ---------------------------------------------------------------------------
-// Static data — documents and materials
-// ---------------------------------------------------------------------------
+
+
+
 $documents = array(
     array( 'title' => 'VENTSPILS JAUNRADES NAMA NOLIKUMS', 'url' => 'https://jaunradesnams.lv/wp-content/uploads/vjn-nolikums_2022.pdf' ),
     array( 'title' => 'NOTEIKUMI AUDZĒKŅIEM PAR DARBA KĀRTĪBU UN DARBA DROŠĪBU NODARBĪBĀS 2026./2027.', 'url' => 'https://jaunradesnams.lv/wp-content/uploads/ieksejas_kartibas_noteikumi_2026.pdf' ),
@@ -379,7 +375,7 @@ get_header();
                             <p class="teacher-info-wrap__logout">
                                 <a href="<?php echo esc_url( add_query_arg( 'logout', '1', get_permalink() ) ); ?>">← Iziet no pedagoga sadaļas</a>
                             </p>
-                            <?php echo $teacher_content; // phpcs:ignore WordPress.Security.EscapeOutput — trusted same-site source ?>
+                            <?php echo $teacher_content; ?>
                         </div>
                     <?php endif; ?>
                 </div>

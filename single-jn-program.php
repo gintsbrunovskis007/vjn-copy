@@ -1,7 +1,5 @@
 <?php
-/**
- * Single nodarbība rendered from the jaunradesnams.lv REST API.
- */
+
 
 $slug = get_query_var( 'jn_single_program' );
 
@@ -12,7 +10,7 @@ if ( ! $slug ) {
     return;
 }
 
-// Extract category from URL path: /nodarbiba/<kat>/<slug>/
+
 $kat      = '';
 $raw_uri  = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
 $req_path = trim( (string) wp_parse_url( $raw_uri, PHP_URL_PATH ), '/' );
@@ -65,7 +63,7 @@ get_header();
     <article class="single-program">
 
         <header class="single-program__header<?php echo $hero ? ' single-program__header--with-image' : ''; ?>"
-                <?php if ( $hero ) : ?>style="background-image: linear-gradient(rgba(92,8,28,0.78), rgba(92,8,28,0.92)), url('<?php echo esc_url( $hero ); ?>');"<?php endif; ?>>
+                <?php if ( $hero ) : ?>style="--hero-image: url('<?php echo esc_url( $hero ); ?>');"<?php endif; ?>>
             <div class="container">
                 <nav class="breadcrumb breadcrumb--light" aria-label="Atrašanās vieta">
                     <a href="<?php echo esc_url( home_url( '/' ) ); ?>">Sākums</a>
@@ -92,7 +90,7 @@ get_header();
             <?php endif; ?>
 
             <div class="single-program__content">
-                <?php echo $content; // phpcs:ignore WordPress.Security.EscapeOutput — trusted same-site source ?>
+                <?php echo $content; ?>
             </div>
 
             <div class="single-program__back">

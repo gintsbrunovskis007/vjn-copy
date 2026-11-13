@@ -1,37 +1,34 @@
 <?php
-/**
- * Front page.
- */
 
-// 1. Fetch the 3 latest posts from category 8 (Jaunrades nams)
 $posts = array();
-$url = "https://jaunradesnams.lv/wp-json/wp/v2/posts?categories=8&per_page=3&_embed";
+$url   = 'https://jaunradesnams.lv/wp-json/wp/v2/posts?categories=8&per_page=3&_embed';
 
 $context = stream_context_create([
     'http' => [
-        'method' => 'GET',
-        'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\r\n" .
-                    "Accept: application/json\r\n" .
-                    "Referer: https://jaunradesnams.lv/\r\n",
+        'method'           => 'GET',
+        'header'           => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36\r\n" .
+                              "Accept: application/json\r\n" .
+                              "Referer: https://jaunradesnams.lv/\r\n",
         'protocol_version' => 1.1,
-        'timeout' => 15,
-        'ignore_errors' => true
+        'timeout'          => 15,
+        'ignore_errors'    => true,
     ],
     'ssl' => [
-        'verify_peer' => false,
-        'verify_peer_name' => false
-    ]
+        'verify_peer'      => false,
+        'verify_peer_name' => false,
+    ],
 ]);
 
-$json = @file_get_contents($url, false, $context);
-if ($json !== false && strpos($json, '421 Misdirected') === false) {
-    $fetched = json_decode($json, true);
-    if (is_array($fetched)) {
+$json = @file_get_contents( $url, false, $context );
+if ( false !== $json && false === strpos( $json, '421 Misdirected' ) ) {
+    $fetched = json_decode( $json, true );
+    if ( is_array( $fetched ) ) {
         $posts = $fetched;
     }
 }
 
-$news_url = home_url( '/jaunrades-nams/aktualitates/' );
+$news_url   = home_url( '/jaunrades-nams/aktualitates/' );
+$hero_image = 'https://jaunradesnams.lv/wp-content/uploads/jnams-1200x666.jpg';
 
 get_header();
 ?>
@@ -40,27 +37,50 @@ get_header();
 
     <h1 class="screen-reader-text">Ventspils Jaunrades nams</h1>
 
-    <!-- INTRO -->
-    <section class="intro" aria-labelledby="intro-title">
-        <div class="intro__inner">
-            <p class="intro__eyebrow">Laipni lūdzam</p>
-            <h2 id="intro-title" class="intro__title">
-                <span>Ventspils</span>
-                <span class="intro__title-accent">Jaunrades nams</span>
-            </h2>
-            <p class="intro__lead">
-                Bērns ir ne tikai tas, kas viņš ir šodien, bet arī tas, par ko viņš var kļūt rīt.
-                <cite>— Ventspils Jaunrades nams</cite>
-            </p>
-            <div class="intro__actions">
-                <a class="btn btn--primary" href="<?php echo esc_url( home_url( '/jaunrades-nams/pulcini/' ) ); ?>">Apskati nodarbības</a>
-                <a class="btn btn--ghost" href="<?php echo esc_url( $news_url ); ?>">Aktualitātes</a>
+    <section class="hero" aria-labelledby="hero-title">
+        <div class="hero__inner">
+            <div class="hero__content">
+                <p class="hero__eyebrow">Laipni lūdzam</p>
+                <h2 id="hero-title" class="hero__title">
+                    Ventspils
+                    <em>Jaunrades nams</em>
+                </h2>
+                <p class="hero__lead">
+                    Bērns ir ne tikai tas, kas viņš ir šodien, bet arī tas, par ko viņš var kļūt rīt.
+                    <cite>— Ventspils Jaunrades nams</cite>
+                </p>
+                <div class="hero__actions">
+                    <a class="btn btn--primary" href="<?php echo esc_url( home_url( '/jaunrades-nams/pulcini/' ) ); ?>">Apskati nodarbības</a>
+                    <a class="btn btn--ghost" href="<?php echo esc_url( $news_url ); ?>">Aktualitātes</a>
+                </div>
+                <div class="hero__stats">
+                    <div class="hero__stat">
+                        <strong>1955</strong>
+                        <span>Kopš dibināšanas</span>
+                    </div>
+                    <div class="hero__stat">
+                        <strong>55+</strong>
+                        <span>Pulciņi</span>
+                    </div>
+                    <div class="hero__stat">
+                        <strong>3–25</strong>
+                        <span>Gadu vecums</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero__visual">
+                <div class="hero__image">
+                    <img src="<?php echo esc_url( $hero_image ); ?>" alt="Ventspils Jaunrades nams" loading="eager" referrerpolicy="no-referrer">
+                </div>
+                <div class="hero__badge">
+                    <strong>1955</strong>
+                    <span>Darbojamies kopš</span>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- PLANETARIUM BANNER -->
-    <section class="section" style="padding-top: 0; padding-bottom: 0;">
+    <section class="section section--flush">
         <div class="container">
             <div class="planetarium-banner">
                 <div class="planetarium-banner__content">
@@ -75,7 +95,6 @@ get_header();
         </div>
     </section>
 
-    <!-- NEWS -->
     <section class="section" aria-labelledby="news-title">
         <div class="container">
             <div class="section__head">

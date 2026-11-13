@@ -1,7 +1,6 @@
 <?php
 /**
  * Template Name: Kontakti
- * Description: Contact page — details, bank info, staff, working hours.
  */
 
 get_header();
@@ -24,9 +23,6 @@ get_header();
     <section class="section">
         <div class="container">
 
-            <!-- ============================================================
-                 TOP: address / phone / email + working hours
-            ============================================================ -->
             <div class="contact-grid">
 
                 <article class="contact-card">
@@ -79,9 +75,6 @@ get_header();
 
             </div>
 
-            <!-- ============================================================
-                 Rekvizīti
-            ============================================================ -->
             <article class="contact-block">
                 <h2 class="contact-block__title">Rekvizīti norēķiniem</h2>
                 <dl class="contact-dl">
@@ -108,11 +101,8 @@ get_header();
                 </dl>
             </article>
 
-            <!-- ============================================================
-                 Staff
-            ============================================================ -->
             <div class="staff-section">
-                <h2 class="contact-block__title" style="text-align:center;">Darbinieki</h2>
+                <h2 class="contact-block__title text-center">Darbinieki</h2>
 
                 <div class="staff-grid">
 

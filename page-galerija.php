@@ -85,9 +85,9 @@ if ( ! function_exists( 'jn_load_albums' ) ) {
     }
 }
 
-// ---------------------------------------------------------------------------
-// DETAIL MODE (?albums=<urlencoded album URL>)
-// ---------------------------------------------------------------------------
+
+
+
 $album_param = isset( $_GET['albums'] ) ? wp_unslash( $_GET['albums'] ) : '';
 $album_url   = $album_param ? urldecode( $album_param ) : '';
 $is_detail   = false;
@@ -117,8 +117,8 @@ if ( $is_detail ) {
         if ( ! is_wp_error( $r ) && 200 === wp_remote_retrieve_response_code( $r ) ) {
             $html = wp_remote_retrieve_body( $r );
 
-            // Pair each <a href=".../gallery/..."> with the FIRST <img> that
-            // appears between it and the NEXT image anchor. Guarantees correct pairing.
+
+
             if ( preg_match_all(
                 '#<a\s[^>]*href=["\']([^"\']+\.(?:jpe?g|png|gif|webp))["\'][^>]*>#i',
                 $html, $anchors, PREG_OFFSET_CAPTURE
@@ -209,7 +209,7 @@ if ( $is_detail ) {
                     </div>
                 <?php endif; ?>
 
-                <div style="text-align:center; margin-top:48px;">
+                <div class="util-center">
                     <a class="btn btn--ghost" href="<?php echo esc_url( $index_url ); ?>">← Atpakaļ uz galeriju</a>
                 </div>
             </div>
@@ -304,9 +304,9 @@ if ( $is_detail ) {
     return;
 }
 
-// ---------------------------------------------------------------------------
-// INDEX MODE
-// ---------------------------------------------------------------------------
+
+
+
 $albums   = jn_load_albums();
 $per_page = 24;
 $current  = isset( $_GET['strana'] ) ? max( 1, (int) $_GET['strana'] ) : 1;

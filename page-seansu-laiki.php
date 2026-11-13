@@ -3,7 +3,7 @@
  * Template Name: Planetārijs - Seansu laiki
  */
 
-// 1. Fetch data from the API
+
 $content = '';
 $error   = '';
 
@@ -42,126 +42,38 @@ if ($json === false) {
     }
 }
 
-// 2. Clean and format the HTML
+
 if ( $content ) {
-    // Remove inline styles
+
     $content = preg_replace( '~<style[^>]*>.*?</style>~is', '', $content );
-    
-    // Remove Avada clearfix and animated wrappers
+
+
     $content = preg_replace( '~<div[^>]*class="[^"]*fusion-clearfix[^"]*"[^>]*>\s*</div>~is', '', $content );
     $content = preg_replace( '~<div[^>]*class="[^"]*fusion-layout-column[^"]*"[^>]*>\s*<div[^>]*class="[^"]*fusion-column-wrapper[^"]*"[^>]*>\s*</div>\s*</div>~is', '', $content );
-    
-    // Clean Avada Button -> Custom Button
+
+
     $content = preg_replace( '~<div[^>]*class="[^"]*fusion-button-wrapper[^"]*"[^>]*>.*?<a[^>]*href="([^"]+)"[^>]*>.*?<span[^>]*>(.*?)</span>.*?</a>.*?</div>~is', '<div class="schedule-btn-wrap"><a href="$1" class="btn btn--primary" target="_blank">$2</a></div>', $content );
 
-    // Format Days into H3 headers
+
     $content = preg_replace( '~<p[^>]*>\s*<strong>(Pirmdiena-slēgts|Otrdiena – piektdiena|Sestdiena – svētdiena)<\/strong>(.*?)<\/p>~is', '<h3 class="schedule-day">$1 $2</h3>', $content );
     $content = preg_replace( '~<p[^>]*>\s*<strong>Pirmdiena-slēgts<\/strong>(.*?)<br>\s*<strong>Otrdiena – piektdiena<\/strong>(.*?)<\/p>~is', '<h3 class="schedule-day">Pirmdiena - slēgts</h3><h3 class="schedule-day">Otrdiena – piektdiena</h3>', $content );
 
-    // FIXED: Wrap times in a styled span (Matches ANY characters between </u> and </strong>)
+
     $content = preg_replace( '~<strong><u>(\d{2}:\d{2})<\/u>.*?<\/strong>~is', '<span class="schedule-time">$1</span>', $content );
-    
-    // Handle the 19:00 time which is inside a span
+
+
     $content = preg_replace( '~<span[^>]*text-decoration:\s*underline;?[^>]*><strong>(\d{2}:\d{2})<\/strong><\/span>~is', '<span class="schedule-time">$1</span>', $content );
 
-    // Highlight red asterisks (Observatorija)
+
     $content = preg_replace( '~<span class="has-inline-color has-vivid-red-color">\*<\/span>~is', '<span class="schedule-star">*</span>', $content );
     $content = preg_replace( '~<span class="has-inline-color has-vivid-red-color">(Jaunums!)<\/span>~is', '<span class="schedule-new">$1</span>', $content );
 
-    // Remove empty paragraphs
+
     $content = preg_replace( '~<p>\s*(?:&nbsp;|\s)*</p>~i', '', $content );
 }
 
 get_header();
 ?>
-
-<style>
-    /* Spacey Theme CSS for Schedule */
-    .schedule-wrap { max-width: 900px; margin: 0 auto; color: #e0e1dd; font-size: 1.05rem; }
-    
-    .schedule-wrap h3.schedule-day { 
-        color: #4cc9f0; 
-        font-size: 1.5rem; 
-        margin: 40px 0 20px !important; 
-        padding-bottom: 10px; 
-        border-bottom: 2px solid rgba(76,201,240,0.3); 
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-    .schedule-wrap h3.schedule-day:first-child { margin-top: 0 !important; }
-
-    .schedule-wrap p { 
-        margin-bottom: 12px; 
-        display: flex; 
-        align-items: flex-start; 
-        gap: 15px; 
-        line-height: 1.5;
-    }
-    
-    .schedule-time { 
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: #132a4c;
-        color: #4cc9f0;
-        font-family: monospace;
-        font-size: 1.1rem;
-        font-weight: bold;
-        padding: 4px 10px;
-        border-radius: 6px;
-        border: 1px solid rgba(76, 201, 240, 0.4);
-        min-width: 65px;
-        flex-shrink: 0;
-    }
-
-    .schedule-star { color: #ff4d4d; font-weight: bold; font-size: 1.2rem; }
-    .schedule-new { 
-        background: #4cc9f0; 
-        color: #0b132b; 
-        font-size: 0.7rem; 
-        font-weight: 800; 
-        padding: 2px 6px; 
-        border-radius: 4px; 
-        text-transform: uppercase; 
-        margin-left: 8px;
-    }
-
-    .schedule-wrap ul { 
-        list-style: none; 
-        padding: 20px 24px; 
-        margin: 30px 0; 
-        background: rgba(255,255,255,0.05); 
-        border-radius: 14px; 
-        border: 1px solid rgba(255,255,255,0.1); 
-    }
-    .schedule-wrap ul li { 
-        position: relative; 
-        padding-left: 24px; 
-        margin-bottom: 12px; 
-        color: #b0c4de; 
-    }
-    .schedule-wrap ul li:last-child { margin-bottom: 0; }
-    .schedule-wrap ul li::before { 
-        content: "→"; 
-        position: absolute; 
-        left: 0; 
-        color: #4cc9f0; 
-        font-weight: bold; 
-    }
-    
-    .schedule-wrap em { 
-        color: #fff; 
-        background: rgba(76,201,240,0.1); 
-        padding: 2px 6px; 
-        border-radius: 4px; 
-        font-style: normal; 
-    }
-
-    .schedule-btn-wrap {
-        text-align: center;
-        margin-top: 40px;
-    }
-</style>
 
 <main id="main" class="site-main" tabindex="-1">
     <section class="page-header" aria-labelledby="page-title">
@@ -178,14 +90,14 @@ get_header();
 
     <section class="section">
         <div class="container">
-            
+
             <?php if ( $error ) : ?>
-                <div class="notice" style="background: rgba(255,0,0,0.1); border-left: 4px solid red; color: white; padding: 20px; border-radius: 8px; max-width: 900px; margin: 0 auto;">
-                    <h3 style="color: #ff4d4d; margin-top: 0;">API Bloks</h3>
+                <div class="notice">
+                    <h3>API Bloks</h3>
                     <p><strong>Kļūda:</strong> <?php echo esc_html( $error ); ?></p>
                 </div>
             <?php else : ?>
-                
+
                 <div class="schedule-wrap">
                     <?php echo $content; ?>
                 </div>

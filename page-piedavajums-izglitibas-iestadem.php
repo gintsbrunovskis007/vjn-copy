@@ -20,9 +20,9 @@ if ( false === $html ) {
 }
 
 if ( $html ) {
-    // Only convert <center> → .offer-price. Do NOT strip Avada separators here —
-    // they contain nested <div>s, and `.*?</div>` leaves orphan closing tags
-    // that corrupt the DOM tree. CSS hides them safely instead.
+
+
+
     $html = preg_replace( '#<center>(.*?)</center>#is', '<div class="offer-price">$1</div>', $html );
     $html = '<div class="jn-offer-wrap">' . $html . '</div>';
 }
@@ -49,12 +49,12 @@ get_header();
     <section class="section">
         <div class="container">
             <?php if ( $html ) : ?>
-                <?php echo $html; // pre-cleaned, structure untouched ?>
+                <?php echo $html; ?>
             <?php else : ?>
                 <p class="notice">Informācija šobrīd nav pieejama.</p>
             <?php endif; ?>
 
-            <div style="text-align:center; margin-top:64px;">
+            <div class="util-center mt-64">
                 <a class="btn btn--ghost" href="<?php echo esc_url( home_url( '/jaunrades-nams/dokumenti/' ) ); ?>">← Atpakaļ uz resursiem</a>
             </div>
         </div>

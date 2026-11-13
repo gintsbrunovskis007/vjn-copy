@@ -1,8 +1,6 @@
 <?php
 /**
  * Template Name: Aktualitātes
- * Description: Paginated list of all posts from the "Jaunrades nams" category.
- * Pagination uses ?strana=N — WP canonical strips ?paged= on static pages.
  */
 
 $per_page     = 9;

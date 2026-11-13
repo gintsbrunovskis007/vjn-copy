@@ -1,12 +1,11 @@
 <?php
 /**
  * Template Name: Pulciņi
- * Description: Nodarbības — kompakta PDF josla + izmaiņu bloks + 4 kategorijas.
  */
 
-// ---------------------------------------------------------------------------
-// 1) Nodarbību izmaiņas (DOMDocument — pair prefix → teacher → course)
-// ---------------------------------------------------------------------------
+
+
+
 if ( ! function_exists( 'jn_load_lesson_changes' ) ) {
     function jn_load_lesson_changes() {
         $cache = get_transient( 'jn_changes_pulcini_v2' );
@@ -100,9 +99,9 @@ if ( ! function_exists( 'jn_load_lesson_changes' ) ) {
     }
 }
 
-// ---------------------------------------------------------------------------
-// 2) PDF saraksta info
-// ---------------------------------------------------------------------------
+
+
+
 if ( ! function_exists( 'jn_schedule_pdf' ) ) {
     function jn_schedule_pdf() {
         $pdf_url  = 'https://jaunradesnams.lv/wp-content/uploads/nodarbiibu-saraksts_2026_2027_3.11.2026_1.pdf';
@@ -115,13 +114,13 @@ if ( ! function_exists( 'jn_schedule_pdf' ) ) {
     }
 }
 
-// ---------------------------------------------------------------------------
-// 3) Kategorijas un programmas
-// ---------------------------------------------------------------------------
+
+
+
 if ( ! function_exists( 'jn_hubs' ) ) {
     function jn_hubs() {
         return array(
-            'kulturizglitibas-programmas'     => array( 'name' => 'Kultūrizglītība',    'sub' => 'Mūzika, deja, teātris, māksla',           'color' => '#b3123a' ),
+            'kulturizglitibas-programmas'     => array( 'name' => 'Kultūrizglītība',    'sub' => 'Mūzika, deja, teātris, māksla',           'color' => '#e8711f' ),
             'stem'                            => array( 'name' => 'STEM',                'sub' => 'Inženierzinātnes, dabaszinātnes',         'color' => '#1a5fa8' ),
             'sports-un-fiziskas-aktivitates'  => array( 'name' => 'Sports',              'sub' => 'Galda spēles, dejas, fitnesa',            'color' => '#2b7a3d' ),
             'socialas-un-pilsoniskas-jomas'   => array( 'name' => 'Sociālās programmas', 'sub' => 'Valodas, kulturoloģija, uzņēmējdarbība',   'color' => '#8a4a00' ),
@@ -130,7 +129,7 @@ if ( ! function_exists( 'jn_hubs' ) ) {
 }
 
 if ( ! function_exists( 'jn_parse_hub_page' ) ) {
-    /** Parse one hub page's rendered HTML into { image, categories }. */
+
     function jn_parse_hub_page( array $page ): array {
         $html = $page['content']['rendered'] ?? '';
         if ( '' === $html ) {
@@ -245,7 +244,7 @@ if ( ! function_exists( 'jn_parse_program' ) ) {
 }
 
 if ( ! function_exists( 'jn_program_details' ) ) {
-    /** Fetch + parse programs for a list of slugs. Results are cached. */
+
     function jn_program_details( array $slugs ): array {
         $slugs = array_values( array_unique( array_filter( $slugs ) ) );
         if ( empty( $slugs ) ) return array();
@@ -280,9 +279,9 @@ if ( ! function_exists( 'jn_cat_url' ) ) {
     }
 }
 
-// ---------------------------------------------------------------------------
-// State — one batched call instead of 4 separate ones
-// ---------------------------------------------------------------------------
+
+
+
 $hubs    = jn_hubs();
 $kat     = isset( $_GET['kat'] ) ? sanitize_key( $_GET['kat'] ) : '';
 $per_page = 12;
@@ -436,12 +435,12 @@ get_header();
     $current = min( $current, $pages );
     $slice   = array_slice( $items, ( $current - 1 ) * $per_page, $per_page );
 
-    $hub_meta = $hubs[ $kat ] ?? array( 'name' => $cat['name'], 'sub' => '', 'color' => '#b3123a' );
+    $hub_meta = $hubs[ $kat ] ?? array( 'name' => $cat['name'], 'sub' => '', 'color' => '#e8711f' );
     $hub_img  = $hub_data[ $kat ]['image'] ?? '';
     ?>
 
     <section class="page-header page-header--hub" aria-labelledby="page-title"
-             <?php if ( $hub_img ) : ?>style="background-image: linear-gradient(rgba(92,8,28,0.72), rgba(92,8,28,0.85)), url('<?php echo esc_url( $hub_img ); ?>');"<?php endif; ?>>
+             <?php if ( $hub_img ) : ?>style="--hero-image: url('<?php echo esc_url( $hub_img ); ?>');"<?php endif; ?>>
         <div class="container">
             <nav class="breadcrumb breadcrumb--light" aria-label="Atrašanās vieta">
                 <a href="<?php echo esc_url( home_url( '/' ) ); ?>">Sākums</a>
@@ -528,7 +527,7 @@ get_header();
 
             <?php endif; ?>
 
-            <div style="text-align:center; margin-top:48px;">
+            <div class="util-center">
                 <a class="btn btn--ghost" href="<?php echo esc_url( jn_cat_url() ); ?>">← Atpakaļ uz kategorijām</a>
             </div>
 

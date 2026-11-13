@@ -1,7 +1,5 @@
 <?php
-/**
- * Single aktualitāte rendered from the jaunradesnams.lv REST API.
- */
+
 
 $slug = get_query_var( 'jn_single_post' );
 
@@ -16,13 +14,13 @@ $cache_key = 'jn_post_' . md5( $slug );
 $post = get_transient( $cache_key );
 
 if ( ! is_array( $post ) ) {
-    // Use jn_api_get which is now properly defined in functions.php
+
     $data = jn_api_get( 'posts', array(
         'slug'     => $slug,
         'per_page' => 1,
         '_embed'   => 1,
     ) );
-    
+
     if ( empty( $data[0] ) ) {
         get_header();
         echo '<main class="container"><p class="notice">Aktualitāte nav atrasta.</p></main>';
@@ -42,10 +40,10 @@ $media = $post['_embedded']['wp:featuredmedia'][0] ?? array();
 $hero  = $media['source_url'] ?? '';
 $alt   = $media['alt_text'] ?? $title;
 
-// Strip trailing "Publicēts: dd.mm.yyyy." paragraph
+
 $content = preg_replace( '#<p>\s*Publicēts?:.*?</p>#is', '', $content );
 
-// Planetarium detection
+
 $categories = $post['categories'] ?? array();
 $is_planetarium_post = in_array( 7, $categories );
 
@@ -65,7 +63,7 @@ get_header();
     <article class="single-post">
 
         <header class="single-post__header<?php echo $hero ? ' single-post__header--with-image' : ''; ?>"
-                <?php if ( $hero ) : ?>style="background-image: linear-gradient(rgba(11,19,43,0.75), rgba(11,19,43,0.95)), url('<?php echo esc_url( $hero ); ?>');"<?php endif; ?>>
+                <?php if ( $hero ) : ?>style="--hero-image: url('<?php echo esc_url( $hero ); ?>');"<?php endif; ?>>
             <div class="container">
                 <nav class="breadcrumb breadcrumb--light" aria-label="Atrašanās vieta">
                     <a href="<?php echo esc_url( home_url( '/' ) ); ?>">Sākums</a>
@@ -96,7 +94,7 @@ get_header();
             <?php endif; ?>
 
             <div class="single-post__content">
-                <?php echo $content; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+                <?php echo $content; ?>
             </div>
 
             <div class="single-post__back">

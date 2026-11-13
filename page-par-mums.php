@@ -1,7 +1,6 @@
 <?php
 /**
  * Template Name: Par mums
- * Description: About page — history and today.
  */
 
 $hero_img = 'https://jaunradesnams.lv/wp-content/uploads/jnams-1200x666.jpg';
@@ -11,11 +10,8 @@ get_header();
 
 <main id="main" class="site-main" tabindex="-1">
 
-    <!-- ============================================================
-         HERO
-    ============================================================ -->
     <section class="about-hero" aria-labelledby="page-title"
-             style="background-image: linear-gradient(rgba(92,8,28,0.72), rgba(92,8,28,0.85)), url('<?php echo esc_url( $hero_img ); ?>');">
+             style="--hero-image: url('<?php echo esc_url( $hero_img ); ?>');">
         <div class="container">
             <nav class="breadcrumb breadcrumb--light" aria-label="Atrašanās vieta">
                 <a href="<?php echo esc_url( home_url( '/' ) ); ?>">Sākums</a>
@@ -29,9 +25,6 @@ get_header();
         </div>
     </section>
 
-    <!-- ============================================================
-         INTRO + STATS
-    ============================================================ -->
     <section class="section">
         <div class="container about-narrow">
 
@@ -63,9 +56,6 @@ get_header();
         </div>
     </section>
 
-    <!-- ============================================================
-         HISTORY
-    ============================================================ -->
     <section class="about-section">
         <div class="container about-narrow">
 
@@ -94,9 +84,6 @@ get_header();
         </div>
     </section>
 
-    <!-- ============================================================
-         BUILDING
-    ============================================================ -->
     <section class="about-section about-section--alt">
         <div class="container about-narrow">
 
@@ -130,9 +117,6 @@ get_header();
         </div>
     </section>
 
-    <!-- ============================================================
-         TODAY
-    ============================================================ -->
     <section class="about-section">
         <div class="container about-narrow">
 

@@ -1,4 +1,4 @@
-/* Mobile menu */
+
 (function () {
   var toggle = document.querySelector(".menu-toggle");
   var nav = document.getElementById("main-navigation");

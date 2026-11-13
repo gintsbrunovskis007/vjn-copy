@@ -5,16 +5,16 @@
 
 if ( ! function_exists( 'jn_load_planet_gallery' ) ) {
     function jn_load_planet_gallery() {
-        // Bumped to v3 to force fresh data
-        $cache = get_transient( 'jn_planet_albums_v3' ); 
+
+        $cache = get_transient( 'jn_planet_albums_v3' );
         if ( is_array( $cache ) ) { return $cache; }
 
         $albums = array();
-        
-        // DIRECT PAGE ID 65 (Planetarium Gallery)
+
+
         $url = 'https://jaunradesnams.lv/wp-json/wp/v2/pages/65?_fields=content';
         $r   = wp_remote_get( $url, array( 'timeout' => 20, 'user-agent' => 'VJN/1.0' ) );
-        
+
         if ( ! is_wp_error( $r ) && 200 === wp_remote_retrieve_response_code( $r ) ) {
             $page = json_decode( wp_remote_retrieve_body( $r ), true );
             $html = $page['content']['rendered'] ?? '';
@@ -55,7 +55,7 @@ if ( ! function_exists( 'jn_load_planet_gallery' ) ) {
     }
 }
 
-// ALBUM DETAIL MODE
+
 $album_url = isset( $_GET['albums'] ) ? urldecode( wp_unslash( $_GET['albums'] ) ) : '';
 $is_detail = false;
 
@@ -72,8 +72,8 @@ if ( $is_detail ) {
         $r = wp_remote_get( $album_url, array( 'timeout' => 25, 'user-agent' => 'Mozilla/5.0' ) );
         if ( ! is_wp_error( $r ) && 200 === wp_remote_retrieve_response_code( $r ) ) {
             $html = wp_remote_retrieve_body( $r );
-            
-            // Isolate gallery container
+
+
             $gallery_html = $html;
             if ( preg_match( '#<div[^>]*class="[^"]*ngg-galleryoverview[^"]*"[^>]*>(.*?)<div[^>]*class="[^"]*ngg-navigation#is', $html, $gm ) ) {
                 $gallery_html = $gm[1];
@@ -86,7 +86,7 @@ if ( $is_detail ) {
                     $a_html = $anchors[0][ $i ][0];
                     $a_pos  = $anchors[0][ $i ][1];
                     $full   = html_entity_decode( $anchors[1][ $i ][0], ENT_QUOTES, 'UTF-8' );
-                    
+
                     if ( ! $full || isset( $seen[ $full ] ) ) { continue; }
                     $seen[ $full ] = true;
 
@@ -136,13 +136,12 @@ if ( $is_detail ) {
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
-                <div style="text-align:center; margin-top:48px;">
+                <div class="util-center">
                     <a class="btn btn--ghost" href="<?php echo esc_url( $index_url ); ?>">← Atpakaļ uz galeriju</a>
                 </div>
             </div>
         </section>
 
-        <!-- LIGHTBOX -->
         <div class="jn-lightbox" id="jn-lightbox" aria-hidden="true" role="dialog" aria-modal="true">
             <button class="jn-lightbox__close" type="button" aria-label="Aizvērt">×</button>
             <button class="jn-lightbox__nav jn-lightbox__nav--prev" type="button" aria-label="Iepriekšējais">‹</button>
@@ -175,7 +174,7 @@ if ( $is_detail ) {
     <?php get_footer(); return;
 }
 
-// INDEX MODE
+
 $albums = jn_load_planet_gallery();
 $base = get_permalink();
 
@@ -200,7 +199,7 @@ get_header();
                 <p class="notice">Galerija šobrīd nevar ielādēt.</p>
             <?php else : ?>
                 <div class="gallery-grid">
-                    <?php foreach ( $albums as $album ) : 
+                    <?php foreach ( $albums as $album ) :
                         $internal = add_query_arg( 'albums', rawurlencode( $album['link'] ), $base );
                         ?>
                         <a class="gallery-card" href="<?php echo esc_url( $internal ); ?>">
