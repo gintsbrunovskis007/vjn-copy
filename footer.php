@@ -1,5 +1,4 @@
 <?php
-// Add real URLs here; links with an empty URL are not rendered.
 $social_links = array(
     'Facebook' => '',
     'YouTube'  => '',
@@ -27,20 +26,13 @@ $social_links = array(
                     </address>
                 </section>
 
-
             </div>
 
             <div class="footer-partners">
-                <img
-                    src="<?php echo esc_url( get_template_directory_uri() . '/assets/ventspils.png' ); ?>"
-                    alt="Ventspils"
-                    loading="lazy"
-                >
-                <img
-                    src="<?php echo esc_url( get_template_directory_uri() . '/assets/europe.png' ); ?>"
-                    alt="Eiropas Savienība"
-                    loading="lazy"
-                >
+                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/ventspils.png' ); ?>"
+                     alt="Ventspils" loading="lazy" width="180" height="56">
+                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/europe.png' ); ?>"
+                     alt="Eiropas Savienība" loading="lazy" width="180" height="56">
             </div>
 
         </div>
@@ -53,7 +45,7 @@ $social_links = array(
 
             <ul class="footer-legal">
                 <li><a href="<?php echo esc_url( home_url( '/pieklistamibas-pazinojums/' ) ); ?>">Piekļūstamības paziņojums</a></li>
-                <?php foreach ( $social_links as $name => $url ) : if ( ! $url ) { continue; } ?>
+                <?php foreach ( $social_links as $name => $url ) : if ( ! $url ) continue; ?>
                     <li>
                         <a href="<?php echo esc_url( $url ); ?>" rel="noopener" target="_blank">
                             <?php echo esc_html( $name ); ?>
@@ -67,41 +59,6 @@ $social_links = array(
     </div>
 
 </footer>
-
-<script>
-(function () {
-    var toggle = document.querySelector('.menu-toggle');
-    var nav = document.getElementById('main-navigation');
-    if (!toggle || !nav) { return; }
-
-    function setOpen(open) {
-        nav.classList.toggle('is-open', open);
-        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-        toggle.setAttribute('aria-label', open ? 'Aizvērt navigāciju' : 'Atvērt navigāciju');
-    }
-
-    toggle.addEventListener('click', function () {
-        setOpen(toggle.getAttribute('aria-expanded') !== 'true');
-    });
-
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && nav.classList.contains('is-open')) {
-            setOpen(false);
-            toggle.focus();
-        }
-    });
-
-    document.addEventListener('click', function (e) {
-        if (nav.classList.contains('is-open') && !nav.contains(e.target) && !toggle.contains(e.target)) {
-            setOpen(false);
-        }
-    });
-
-    window.matchMedia('(min-width: 769px)').addEventListener('change', function (m) {
-        if (m.matches) { setOpen(false); }
-    });
-})();
-</script>
 
 <?php wp_footer(); ?>
 </body>

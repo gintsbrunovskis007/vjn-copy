@@ -1,79 +1,141 @@
 <?php
 /**
  * Template Name: Resursi
- * Description: Metodiskie materiāli, dokumenti un informācija izglītības iestādēm.
+ * Description: Metodiskie materiāli, dokumenti un informācija pedagogiem.
+ *
+ * Teacher auth uses an HMAC-signed cookie (no PHP session) so it works with
+ * page caching and cannot be forged. Nonce + rate-limit protect the form.
  */
 
-if ( session_status() === PHP_SESSION_NONE ) {
-    session_start();
+// ---------------------------------------------------------------------------
+// Teacher password — override in wp-config.php if you want to change it.
+// ---------------------------------------------------------------------------
+if ( ! defined( 'JN_TEACHER_PASSWORD' ) ) {
+    define( 'JN_TEACHER_PASSWORD', 'venta' );
+}
+if ( ! defined( 'JN_TEACHER_TTL' ) ) {
+    define( 'JN_TEACHER_TTL', 8 * HOUR_IN_SECONDS );
 }
 
-// ==========================================
-// 1. INFORMĀCIJA PEDAGOGIEM (Sesijas loģika)
-// ==========================================
-$is_auth = isset( $_SESSION['jn_teacher_auth'] ) && $_SESSION['jn_teacher_auth'] === true;
+// ---------------------------------------------------------------------------
+// Signed-cookie auth (cache-safe)
+// ---------------------------------------------------------------------------
+function jn_teacher_cookie_name(): string {
+    return 'jn_teacher_auth';
+}
+
+function jn_teacher_sign( int $expires ): string {
+    return $expires . '.' . hash_hmac( 'sha256', 'jn_teacher_auth|' . $expires, wp_salt( 'auth' ) );
+}
+
+function jn_teacher_verify(): bool {
+    if ( empty( $_COOKIE[ jn_teacher_cookie_name() ] ) ) return false;
+    $raw = (string) $_COOKIE[ jn_teacher_cookie_name() ];
+    if ( ! preg_match( '/^(\d{10})\.([a-f0-9]{64})$/', $raw, $m ) ) return false;
+    if ( (int) $m[1] < time() ) return false;
+    $expected = hash_hmac( 'sha256', 'jn_teacher_auth|' . $m[1], wp_salt( 'auth' ) );
+    return hash_equals( $expected, $m[2] );
+}
+
+function jn_teacher_grant(): void {
+    $expires = time() + JN_TEACHER_TTL;
+    $sig     = jn_teacher_sign( $expires );
+    setcookie(
+        jn_teacher_cookie_name(),
+        $sig,
+        array(
+            'expires'  => $expires,
+            'path'     => COOKIEPATH ?: '/',
+            'domain'   => COOKIE_DOMAIN,
+            'secure'   => is_ssl(),
+            'httponly' => true,
+            'samesite' => 'Lax',
+        )
+    );
+    $_COOKIE[ jn_teacher_cookie_name() ] = $sig;
+}
+
+function jn_teacher_revoke(): void {
+    setcookie( jn_teacher_cookie_name(), '', time() - 3600, COOKIEPATH ?: '/', COOKIE_DOMAIN );
+    unset( $_COOKIE[ jn_teacher_cookie_name() ] );
+}
+
+function jn_teacher_rate_key(): string {
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+    return 'jn_teacher_rl_' . md5( $ip );
+}
+
+// ---------------------------------------------------------------------------
+// Handle login / logout
+// ---------------------------------------------------------------------------
+$is_auth   = jn_teacher_verify();
 $error_msg = '';
 
-if ( isset( $_POST['jn_password'] ) ) {
-    if ( $_POST['jn_password'] === 'venta' ) {
-        $_SESSION['jn_teacher_auth'] = true;
-        wp_redirect( get_permalink() . '#pedagogiem' );
+if ( isset( $_POST['jn_login'] ) ) {
+    check_admin_referer( 'jn_teacher_login', 'jn_teacher_nonce' );
+
+    $attempts = (int) get_transient( jn_teacher_rate_key() );
+    if ( $attempts >= 5 ) {
+        $error_msg = 'Pārāk daudz mēģinājumu. Lūdzu, uzgaidiet 15 minūtes.';
+    } elseif ( hash_equals( JN_TEACHER_PASSWORD, (string) ( $_POST['jn_password'] ?? '' ) ) ) {
+        delete_transient( jn_teacher_rate_key() );
+        jn_teacher_grant();
+        wp_safe_redirect( add_query_arg( 'ok', '1', get_permalink() ) . '#pedagogiem' );
         exit;
     } else {
-        $error_msg = "Nepareiza parole. Lūdzu, mēģiniet vēlreiz.";
+        set_transient( jn_teacher_rate_key(), $attempts + 1, 15 * MINUTE_IN_SECONDS );
+        $error_msg = 'Nepareiza parole. Lūdzu, mēģiniet vēlreiz.';
     }
+    $is_auth = jn_teacher_verify();
 }
 
+if ( isset( $_GET['logout'] ) ) {
+    jn_teacher_revoke();
+    wp_safe_redirect( get_permalink() . '#pedagogiem' );
+    exit;
+}
+
+// ---------------------------------------------------------------------------
+// Teacher content (API with static fallback)
+// ---------------------------------------------------------------------------
 $teacher_content = '';
-
 if ( $is_auth ) {
-    $page_id   = 3892;
-    $cache_key = 'jn_teacher_info_v11';
-    $teacher_content = get_transient( $cache_key );
+    $page = jn_api_cache(
+        'page_3892_content',
+        'pages/3892',
+        array( '_fields' => 'content' ),
+        15 * MINUTE_IN_SECONDS
+    );
+    if ( is_array( $page ) && ! empty( $page['content']['rendered'] ) ) {
+        $teacher_content = $page['content']['rendered'];
+    }
 
-    if ( false === $teacher_content || empty( $teacher_content ) ) {
-        // Tīrs API izsaukums bez liekām galvenēm
-        $api_url = "https://jaunradesnams.lv/wp-json/wp/v2/pages/{$page_id}?_fields=content";
-        
-        $r = wp_remote_get( $api_url, array( 
-            'timeout'    => 15,
-            'user-agent' => 'VentspilsJaunradesNams/1.0'
-        ) );
-
-        if ( ! is_wp_error( $r ) && 200 === wp_remote_retrieve_response_code( $r ) ) {
-            $data = json_decode( wp_remote_retrieve_body( $r ), true );
-            if ( ! empty( $data['content']['rendered'] ) ) {
-                $teacher_content = $data['content']['rendered'];
-                set_transient( $cache_key, $teacher_content, 15 * MINUTE_IN_SECONDS );
-            }
-        }
-        
-        // Ja API neielādējas (421 kļūda), lietojam statisko saturu
-        if ( empty( $teacher_content ) ) {
-            ob_start();
-            ?>
-            <h3><strong>Aktualitātes:</strong></h3>
-            <p><strong>Ventspils Jaunrades nama kalendārs mācību gadam</strong> aplūkojams <a href="https://docs.google.com/spreadsheets/d/1IjJe04ph9lnV-1Z_7w3X-Rcq1ZtuHrpN37pLJJ60QEY/edit#gid=15019426" target="_blank">šeit</a> vai ierakstot adresi <strong>ej.uz/VJNkalendars</strong></p>
-            <h3><strong>Faili skolotājiem:</strong></h3>
-            <a href="https://jaunradesnams.lv/wp-content/uploads/darba_kartibas_noteikumi_2026.pdf" class="teacher-btn" target="_blank">📄 Darba kārtības noteikumi</a>
-            <p style="margin-top: 24px;"><strong>Iesniegums audzēkņu uzņemšanai u.c. dokumenti</strong> <a href="https://jaunradesnams.lv/dokumenti/" target="_blank">šeit</a></p>
-            <h3><strong>Pieprasījums ārpusnodarbību pasākumam:</strong></h3>
-            <p><em>Šie abi dokumenti ir saistoši pedagogiem, kuri vēlas rīkot pasākumus Jaunrades namā un arī ārpus tā. Tehniskais pieteikums jāiesniedz ne vēlāk kā mēnesi pirms pasākuma, bet programmas pieteikums – ne vēlāk kā trīs darba dienas pēc pasākuma.</em></p>
-            <a href="https://jaunradesnams.lv/wp-content/uploads/programmas_pazinojums_AKKA-LAA.doc" class="teacher-btn" target="_blank">📄 Programmas paziņojums</a>
-            <a href="https://jaunradesnams.lv/wp-content/uploads/tehniskais_pieteikums_JN_kolektiviem.docx" class="teacher-btn" target="_blank">📄 Pasākuma tehniskais pieteikums</a>
-            <h3><strong>Dokumenti komandējumiem:</strong></h3>
-            <a href="https://jaunradesnams.lv/wp-content/uploads/komandejuma_pieprasijums_1.docx" class="teacher-btn" target="_blank">📄 Komandējuma pieprasījums</a>
-            <a href="https://jaunradesnams.lv/wp-content/uploads/transporta_pieprasijums_2026_1.docx" class="teacher-btn" target="_blank">📄 Transporta pieprasījums</a>
-            <a href="https://jaunradesnams.lv/wp-content/uploads/komandejuma_parskats_2026_1.doc" class="teacher-btn" target="_blank">📄 Komandējuma pārskats</a>
-            <?php
-            $teacher_content = ob_get_clean();
-        }
+    if ( '' === $teacher_content ) {
+        ob_start(); ?>
+        <h3><strong>Aktualitātes:</strong></h3>
+        <p><strong>Ventspils Jaunrades nama kalendārs mācību gadam</strong> aplūkojams
+            <a href="https://docs.google.com/spreadsheets/d/1IjJe04ph9lnV-1Z_7w3X-Rcq1ZtuHrpN37pLJJ60QEY/edit#gid=15019426" target="_blank" rel="noopener">šeit</a>
+            vai ierakstot adresi <strong>ej.uz/VJNkalendars</strong></p>
+        <h3><strong>Faili skolotājiem:</strong></h3>
+        <a href="https://jaunradesnams.lv/wp-content/uploads/darba_kartibas_noteikumi_2026.pdf" class="teacher-btn" target="_blank" rel="noopener">📄 Darba kārtības noteikumi</a>
+        <p style="margin-top: 24px;"><strong>Iesniegums audzēkņu uzņemšanai u.c. dokumenti</strong>
+            <a href="<?php echo esc_url( home_url( '/jaunrades-nams/dokumenti/' ) ); ?>">šeit</a></p>
+        <h3><strong>Pieprasījums ārpusnodarbību pasākumam:</strong></h3>
+        <p><em>Šie abi dokumenti ir saistoši pedagogiem, kuri vēlas rīkot pasākumus Jaunrades namā un arī ārpus tā. Tehniskais pieteikums jāiesniedz ne vēlāk kā mēnesi pirms pasākuma, bet programmas pieteikums – ne vēlāk kā trīs darba dienas pēc pasākuma.</em></p>
+        <a href="https://jaunradesnams.lv/wp-content/uploads/programmas_pazinojums_AKKA-LAA.doc" class="teacher-btn" target="_blank" rel="noopener">📄 Programmas paziņojums</a>
+        <a href="https://jaunradesnams.lv/wp-content/uploads/tehniskais_pieteikums_JN_kolektiviem.docx" class="teacher-btn" target="_blank" rel="noopener">📄 Pasākuma tehniskais pieteikums</a>
+        <h3><strong>Dokumenti komandējumiem:</strong></h3>
+        <a href="https://jaunradesnams.lv/wp-content/uploads/komandejuma_pieprasijums_1.docx" class="teacher-btn" target="_blank" rel="noopener">📄 Komandējuma pieprasījums</a>
+        <a href="https://jaunradesnams.lv/wp-content/uploads/transporta_pieprasijums_2026_1.docx" class="teacher-btn" target="_blank" rel="noopener">📄 Transporta pieprasījums</a>
+        <a href="https://jaunradesnams.lv/wp-content/uploads/komandejuma_parskats_2026_1.doc" class="teacher-btn" target="_blank" rel="noopener">📄 Komandējuma pārskats</a>
+        <?php
+        $teacher_content = ob_get_clean();
     }
 }
 
-// ==========================================
-// 2. DOKUMENTU SARAKSTS
-// ==========================================
+// ---------------------------------------------------------------------------
+// Static data — documents and materials
+// ---------------------------------------------------------------------------
 $documents = array(
     array( 'title' => 'VENTSPILS JAUNRADES NAMA NOLIKUMS', 'url' => 'https://jaunradesnams.lv/wp-content/uploads/vjn-nolikums_2022.pdf' ),
     array( 'title' => 'NOTEIKUMI AUDZĒKŅIEM PAR DARBA KĀRTĪBU UN DARBA DROŠĪBU NODARBĪBĀS 2026./2027.', 'url' => 'https://jaunradesnams.lv/wp-content/uploads/ieksejas_kartibas_noteikumi_2026.pdf' ),
@@ -87,9 +149,6 @@ $documents = array(
     array( 'title' => 'Rīcības kārtība Ventspils Jaunrades namā gaisa telpas apdraudējuma gadījumā', 'url' => 'https://jaunradesnams.lv/wp-content/uploads/VJN_ricibas_kartiba_gaisa_telpas_apdraudejuma_gadijuma.pdf' ),
 );
 
-// ==========================================
-// 3. METODISKIE MATERIĀLI
-// ==========================================
 $materials = array(
     array(
         'group' => 'Kultūrizglītības programmas',
@@ -231,27 +290,27 @@ get_header();
             <details class="resursi-accordion">
                 <summary class="resursi-accordion__summary">
                     <h2 class="resursi-accordion__title">Metodiskie materiāli</h2>
-                    <span class="resursi-accordion__icon"></span>
+                    <span class="resursi-accordion__icon" aria-hidden="true"></span>
                 </summary>
                 <div class="resursi-accordion__content">
                     <?php foreach ( $materials as $group ) : ?>
                         <div class="resursi-group">
                             <h3 class="resursi-group__title"><?php echo esc_html( $group['group'] ); ?></h3>
                             <div class="resursi-grid">
-                                <?php foreach ( $group['subgroups'] as $subgroup ) : ?>
+                                <?php foreach ( $group['subgroups'] as $sg ) : ?>
                                     <div class="resursi-card">
-                                        <?php if ( ! empty( $subgroup['image'] ) ) : ?>
+                                        <?php if ( ! empty( $sg['image'] ) ) : ?>
                                             <div class="resursi-card__media">
-                                                <img src="<?php echo esc_url( $subgroup['image'] ); ?>" alt="" loading="lazy">
+                                                <img src="<?php echo esc_url( $sg['image'] ); ?>" alt="" loading="lazy" referrerpolicy="no-referrer">
                                             </div>
                                         <?php endif; ?>
                                         <div class="resursi-card__body">
-                                            <h4 class="resursi-card__title"><?php echo esc_html( $subgroup['name'] ); ?></h4>
+                                            <h4 class="resursi-card__title"><?php echo esc_html( $sg['name'] ); ?></h4>
                                             <ul class="resursi-links">
-                                                <?php foreach ( $subgroup['files'] as $file ) : ?>
+                                                <?php foreach ( $sg['files'] as $file ) : ?>
                                                     <li>
                                                         <a href="<?php echo esc_url( $file['url'] ); ?>" class="resursi-link" target="_blank" rel="noopener">
-                                                            <span class="resursi-link__icon">📄</span>
+                                                            <span class="resursi-link__icon" aria-hidden="true">📄</span>
                                                             <span class="resursi-link__text"><?php echo esc_html( $file['title'] ); ?></span>
                                                         </a>
                                                     </li>
@@ -269,7 +328,7 @@ get_header();
             <details class="resursi-accordion">
                 <summary class="resursi-accordion__summary">
                     <h2 class="resursi-accordion__title">Dokumenti</h2>
-                    <span class="resursi-accordion__icon"></span>
+                    <span class="resursi-accordion__icon" aria-hidden="true"></span>
                 </summary>
                 <div class="resursi-accordion__content">
                     <ul class="doc-list">
@@ -284,36 +343,45 @@ get_header();
                 </div>
             </details>
 
-            <!-- PIEVIENOTS OPEN, LAI PAROLES FORMA BŪTU REDZAMA UZREIZ -->
-            <details class="resursi-accordion" id="pedagogiem" open>
+            <details class="resursi-accordion" id="pedagogiem" <?php echo isset( $_GET['ok'] ) ? 'open' : ''; ?>>
                 <summary class="resursi-accordion__summary">
-                    <h2 class="resursi-accordion__title">Informācija pedagogiem</h2>
-                    <span class="resursi-accordion__icon"></span>
+                    <h2 class="resursi-accordion__title">
+                        Informācija pedagogiem
+                        <?php if ( $is_auth ) : ?>
+                            <span class="resursi-accordion__badge">Piekļuve atvērta</span>
+                        <?php else : ?>
+                            <span class="resursi-accordion__badge resursi-accordion__badge--locked">🔒 Nepieciešama parole</span>
+                        <?php endif; ?>
+                    </h2>
+                    <span class="resursi-accordion__icon" aria-hidden="true"></span>
                 </summary>
                 <div class="resursi-accordion__content">
-                    
                     <?php if ( ! $is_auth ) : ?>
                         <div class="teacher-login">
-                            <div class="teacher-login__icon">🔒</div>
+                            <div class="teacher-login__icon" aria-hidden="true">🔒</div>
                             <h3 class="teacher-login__title">Ierobežota piekļuve</h3>
                             <p class="teacher-login__desc">Lūdzu, ievadiet paroli, lai apskatītu informāciju pedagogiem.</p>
-                            
+
                             <?php if ( $error_msg ) : ?>
-                                <div class="teacher-login__error"><?php echo esc_html( $error_msg ); ?></div>
+                                <div class="teacher-login__error" role="alert"><?php echo esc_html( $error_msg ); ?></div>
                             <?php endif; ?>
 
-                            <form method="post" action="#pedagogiem" class="teacher-login__form">
-                                <input type="password" name="jn_password" placeholder="Parole" class="teacher-login__input" required autofocus>
+                            <form method="post" action="<?php echo esc_url( get_permalink() . '#pedagogiem' ); ?>" class="teacher-login__form">
+                                <?php wp_nonce_field( 'jn_teacher_login', 'jn_teacher_nonce' ); ?>
+                                <input type="hidden" name="jn_login" value="1">
+                                <label for="jn_password" class="screen-reader-text">Parole</label>
+                                <input type="password" id="jn_password" name="jn_password" placeholder="Parole" class="teacher-login__input" required autocomplete="current-password">
                                 <button type="submit" class="btn btn--primary">Piekļūt</button>
                             </form>
                         </div>
-
                     <?php else : ?>
                         <div class="teacher-info-wrap">
-                            <?php echo $teacher_content; ?>
+                            <p class="teacher-info-wrap__logout">
+                                <a href="<?php echo esc_url( add_query_arg( 'logout', '1', get_permalink() ) ); ?>">← Iziet no pedagoga sadaļas</a>
+                            </p>
+                            <?php echo $teacher_content; // phpcs:ignore WordPress.Security.EscapeOutput — trusted same-site source ?>
                         </div>
                     <?php endif; ?>
-
                 </div>
             </details>
 

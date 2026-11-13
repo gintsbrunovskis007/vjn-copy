@@ -4,6 +4,7 @@
  */
 
 $slug = get_query_var( 'jn_single_program' );
+
 if ( ! $slug ) {
     get_header();
     echo '<main class="container"><p class="notice">Nodarbība nav atrasta.</p></main>';
@@ -13,11 +14,12 @@ if ( ! $slug ) {
 
 // Extract category from URL path: /nodarbiba/<kat>/<slug>/
 $kat      = '';
-$req_path = trim( (string) parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH ), '/' );
+$raw_uri  = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
+$req_path = trim( (string) wp_parse_url( $raw_uri, PHP_URL_PATH ), '/' );
 $segments = $req_path ? explode( '/', $req_path ) : array();
 $pos      = array_search( 'nodarbiba', $segments, true );
 if ( false !== $pos && isset( $segments[ $pos + 2 ] ) ) {
-    $kat = $segments[ $pos + 1 ];
+    $kat = sanitize_key( $segments[ $pos + 1 ] );
 }
 
 $hub_names = array(
@@ -28,18 +30,13 @@ $hub_names = array(
 );
 $cat_name = isset( $hub_names[ $kat ] ) ? $hub_names[ $kat ] : ucfirst( str_replace( '-', ' ', $kat ) );
 
-$cache_key = 'jn_prog_single_v12_' . md5( $slug );
-$page = get_transient( $cache_key );
-if ( ! is_array( $page ) ) {
-    $data = jn_api_get( 'pages', array( 'slug' => $slug, 'per_page' => 1 ) );
-    if ( empty( $data[0] ) ) {
-        get_header();
-        echo '<main class="container"><p class="notice">Nodarbība nav atrasta.</p></main>';
-        get_footer();
-        return;
-    }
-    $page = $data[0];
-    set_transient( $cache_key, $page, 15 * MINUTE_IN_SECONDS );
+$page = jn_get_page_by_slug( $slug );
+
+if ( ! $page ) {
+    get_header();
+    echo '<main class="container"><p class="notice">Nodarbība nav atrasta.</p></main>';
+    get_footer();
+    return;
 }
 
 $title   = wp_strip_all_tags( $page['title']['rendered'] ?? '' );
@@ -49,7 +46,9 @@ $link    = $page['link'] ?? '';
 $hero = ''; $alt = $title;
 if ( preg_match( '~<img[^>]+src="([^"]+)"[^>]*>~i', $content, $m ) ) {
     $hero = $m[1];
-    if ( preg_match( '~alt="([^"]*)"~i', $m[0], $a ) ) { $alt = $a[1] ?: $title; }
+    if ( preg_match( '~alt="([^"]*)"~i', $m[0], $a ) ) {
+        $alt = $a[1] ?: $title;
+    }
     $content = preg_replace( '~<img[^>]+' . preg_quote( $hero, '~' ) . '[^>]*>~i', '', $content, 1 );
 }
 
@@ -88,12 +87,12 @@ get_header();
 
             <?php if ( $hero ) : ?>
                 <figure class="single-program__hero-img">
-                    <img src="<?php echo esc_url( $hero ); ?>" alt="<?php echo esc_attr( $alt ); ?>">
+                    <img src="<?php echo esc_url( $hero ); ?>" alt="<?php echo esc_attr( $alt ); ?>" referrerpolicy="no-referrer">
                 </figure>
             <?php endif; ?>
 
             <div class="single-program__content">
-                <?php echo $content; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+                <?php echo $content; // phpcs:ignore WordPress.Security.EscapeOutput — trusted same-site source ?>
             </div>
 
             <div class="single-program__back">

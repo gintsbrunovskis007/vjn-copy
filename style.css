@@ -26,9 +26,12 @@
   --gutter: clamp(20px, 4vw, 44px);
   --header-h: 80px;
   --shadow: 0 4px 14px rgba(92, 8, 28, 0.1), 0 14px 32px rgba(92, 8, 28, 0.08);
+  --ease: cubic-bezier(0.2, 0, 0.2, 1);
+
   --shadow-hover:
     0 8px 20px rgba(92, 8, 28, 0.14), 0 20px 44px rgba(92, 8, 28, 0.14);
-  --ease: cubic-bezier(0.2, 0, 0.2, 1);
+  --shadow-strong:
+    0 8px 24px rgba(92, 8, 28, 0.18), 0 24px 56px rgba(92, 8, 28, 0.18);
 }
 
 /* ================================
@@ -2549,50 +2552,108 @@ a {
    PIEDĀVĀJUMS IZGLĪTĪBAS IESTĀDĒM
 ================================ */
 
-/* Attēls (Buklets) */
-.jn-offer-wrap > figure {
-  margin: 0 0 clamp(40px, 5vw, 64px);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-strong);
+/* --- Wrapper: flexbox, both direct-column and .fusion-row structures --- */
+
+.jn-offer-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  align-items: stretch;
 }
 
-.jn-offer-wrap > figure img {
+/* Hero / brochure image on top spans full width */
+
+.jn-offer-wrap > figure,
+.jn-offer-wrap > img {
+  flex: 0 0 100%;
+  max-width: 100%;
+  margin: 0 0 clamp(32px, 4vw, 48px);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-strong, 0 8px 24px rgba(92, 8, 28, 0.18));
+}
+
+.jn-offer-wrap > figure img,
+.jn-offer-wrap > img {
   display: block;
   width: 100%;
   height: auto;
 }
 
-/* 3 kolonnu režģis */
-.jn-offer-wrap {
-  display: block;
+/* Any non-column direct child of the wrapper spans full width
+   (headings, intro paragraphs, .offer-price, etc.) */
+
+.jn-offer-wrap
+  > :not(.fusion-one-third):not(.fusion-column):not(.fusion-layout-column):not(
+    .fusion-row
+  ) {
+  flex: 0 0 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
-/* Pārveidojam Avada kolonnas par CSS Grid */
-.jn-offer-wrap .fusion-one-third {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-  margin-bottom: 40px;
+/* If Avada wraps the columns in .fusion-row, dissolve it into a second
+   flex row inside .jn-offer-wrap */
+
+.jn-offer-wrap > .fusion-row,
+.jn-offer-wrap > .fusion-builder-row {
+  flex: 0 0 100%;
+  max-width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  align-items: stretch;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-/* Uz lielākiem ekrāniem liekam 3 kolonnas */
+/* Neutralize Avada column framework: no floats, no gutters, no padding */
+
+.jn-offer-wrap .fusion-one-third,
+.jn-offer-wrap .fusion-column,
+.jn-offer-wrap .fusion-layout-column {
+  float: none !important;
+  clear: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+/* Hide Avada separators & clearfixes — they break flex layout */
+
+.jn-offer-wrap .fusion-clearfix,
+.jn-offer-wrap .fusion-sep-clear,
+.jn-offer-wrap .fusion-separator,
+.jn-offer-wrap .fusion-separator-border {
+  display: none !important;
+}
+
+/* Column sizing — 3 across on desktop, stacked on mobile */
+
 @media (min-width: 900px) {
-  .jn-offer-wrap .fusion-one-third {
-    /* Šis ir triks – mēs izmantojam display: contents, lai padarītu iekšējos blokus par Grid bērniem */
-    display: contents;
-  }
-
-  .jn-offer-wrap {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 32px;
-    align-items: start;
+  .jn-offer-wrap > .fusion-one-third,
+  .jn-offer-wrap > .fusion-row > .fusion-one-third,
+  .jn-offer-wrap > .fusion-builder-row > .fusion-one-third {
+    flex: 1 1 calc((100% - 64px) / 3);
+    max-width: calc((100% - 64px) / 3);
   }
 }
 
-/* Stils katrai kolonnai */
-.jn-offer-wrap .fusion-column-wrapper {
+@media (max-width: 899px) {
+  .jn-offer-wrap > .fusion-one-third,
+  .jn-offer-wrap > .fusion-row > .fusion-one-third,
+  .jn-offer-wrap > .fusion-builder-row > .fusion-one-third {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+/* Card visual — apply to the inner wrapper (normal Avada case),
+   or directly to the column when there is no inner wrapper */
+
+.jn-offer-wrap .fusion-column-wrapper,
+.jn-offer-wrap .fusion-one-third:not(:has(.fusion-column-wrapper)) {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -2601,17 +2662,22 @@ a {
   border-radius: var(--radius-lg);
   border-top: 5px solid var(--crimson);
   box-shadow: var(--shadow);
-  transition: transform 0.3s var(--ease);
+  box-sizing: border-box;
+  transition:
+    transform 0.3s var(--ease),
+    box-shadow 0.3s var(--ease);
 }
 
-.jn-offer-wrap .fusion-column-wrapper:hover {
+.jn-offer-wrap .fusion-column-wrapper:hover,
+.jn-offer-wrap .fusion-one-third:not(:has(.fusion-column-wrapper)):hover {
   transform: translateY(-5px);
   box-shadow: var(--shadow-hover);
 }
 
-/* Virsraksti */
+/* Titles */
+
 .jn-offer-wrap .fusion-title {
-  margin: 0 0 20px !important;
+  margin: 0 0 16px !important;
 }
 
 .jn-offer-wrap h2 {
@@ -2633,7 +2699,8 @@ a {
   line-height: 1.4;
 }
 
-/* Saraksti */
+/* Lists */
+
 .jn-offer-wrap ul {
   list-style: none;
   margin: 0 0 24px;
@@ -2664,9 +2731,10 @@ a {
   color: var(--muted);
 }
 
-/* Cena / Bezmaksas bloks apakšā */
+/* Price box pushed to bottom of each card */
+
 .jn-offer-wrap .offer-price {
-  margin-top: auto; /* Nostumj uz leju */
+  margin-top: auto;
   padding-top: 20px;
   border-top: 1px dashed var(--line);
   font-size: 0.8125rem;
@@ -2677,13 +2745,12 @@ a {
   text-align: center;
 }
 
-/* Avada "tukšo" rindu notīrīšana */
-.jn-offer-wrap .fusion-clearfix,
-.jn-offer-wrap .fusion-sep-clear,
-.jn-offer-wrap .fusion-separator {
-  display: none !important;
+@media (prefers-reduced-motion: reduce) {
+  .jn-offer-wrap .fusion-column-wrapper:hover,
+  .jn-offer-wrap .fusion-one-third:not(:has(.fusion-column-wrapper)):hover {
+    transform: none;
+  }
 }
-
 /* ================================
    RESURSI LAPA
 ================================ */
@@ -3057,4 +3124,517 @@ a {
 .teacher-info-wrap .wp-block-group__inner-container {
   margin: 0;
   padding: 0;
+}
+
+/* ================================
+   DETAILS ACCORDION ANIMATION
+================================ */
+
+.resursi-accordion > .resursi-accordion__content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.2, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.resursi-accordion[open] > .resursi-accordion__content {
+  grid-template-rows: 1fr;
+}
+
+.resursi-accordion__content > * {
+  min-height: 0;
+}
+
+/* Teacher auth badge */
+
+.resursi-accordion__title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.resursi-accordion__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  background: rgba(43, 122, 61, 0.12);
+  color: #2b7a3d;
+  border: 1px solid rgba(43, 122, 61, 0.32);
+}
+
+.resursi-accordion__badge--locked {
+  background: rgba(179, 18, 58, 0.08);
+  color: var(--crimson);
+  border-color: rgba(179, 18, 58, 0.32);
+}
+
+/* Focus rings inside cards (visible, not clipped by overflow:hidden) */
+
+.jn-post:focus-within,
+.gallery-card:focus-visible,
+.hub-card:focus-visible,
+.resursi-card:focus-within,
+.staff-card:focus-within {
+  outline: 3px solid var(--crimson-darkest);
+  outline-offset: -3px;
+}
+
+/* Tighter gaps on mobile */
+
+@media (max-width: 600px) {
+  .jn-latest-posts,
+  .hub-grid,
+  .gallery-grid,
+  .staff-grid,
+  .contact-grid,
+  .resursi-grid {
+    gap: 16px;
+  }
+  .section {
+    padding: clamp(24px, 4vw, 32px) 0 clamp(48px, 6vw, 64px);
+  }
+}
+
+/* Teacher logout link */
+
+.teacher-info-wrap__logout {
+  margin: 0 0 24px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.teacher-info-wrap__logout a {
+  display: inline-block;
+  padding: 8px 16px;
+  color: var(--muted);
+  text-decoration: none;
+  border-radius: 999px;
+  background: rgba(255, 247, 238, 0.6);
+  transition: background-color 0.2s ease;
+}
+
+.teacher-info-wrap__logout a:hover {
+  background: var(--cream);
+  color: var(--crimson);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resursi-accordion > .resursi-accordion__content {
+    transition: none;
+  }
+}
+
+/* ================================
+   PLANETARIUM THEME (SPACEY BLUE)
+================================ */
+
+body.planetarium-theme {
+  background-color: #0b132b;
+  background-image:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(76, 201, 240, 0.15),
+      transparent 40%
+    ),
+    radial-gradient(circle at 85% 80%, rgba(114, 9, 183, 0.2), transparent 50%),
+    url('data:image/svg+xml;utf8,<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="1" fill="%23fff" opacity="0.3"/><circle cx="50" cy="80" r="1.5" fill="%23fff" opacity="0.5"/><circle cx="120" cy="40" r="1" fill="%23fff" opacity="0.2"/><circle cx="180" cy="100" r="2" fill="%23fff" opacity="0.4"/><circle cx="90" cy="150" r="1" fill="%23fff" opacity="0.3"/></svg>');
+  background-repeat: repeat;
+  color: #e0e1dd;
+}
+
+body.planetarium-theme h1,
+body.planetarium-theme h2,
+body.planetarium-theme h3 {
+  color: #ffffff;
+}
+
+/* --- HEADER (CREAM BACKGROUND, RED TEXT) --- */
+body.planetarium-theme .site-header {
+  background: var(--cream);
+  border-bottom: 2px solid var(--crimson);
+}
+
+/* Red text inside the cream header */
+body.planetarium-theme .main-nav a {
+  color: var(--crimson);
+}
+
+body.planetarium-theme .main-nav a:hover {
+  background: rgba(179, 18, 58, 0.08);
+  color: var(--crimson-darkest);
+}
+
+body.planetarium-theme .main-nav a.is-current {
+  background: var(--crimson);
+  color: #ffffff;
+}
+
+body.planetarium-theme .menu-toggle {
+  background: var(--crimson);
+}
+
+body.planetarium-theme .menu-toggle__bars span {
+  background: var(--white);
+}
+
+@media (max-width: 768px) {
+  body.planetarium-theme .js .main-nav {
+    background: var(--cream);
+    border-bottom: 2px solid var(--crimson);
+  }
+}
+
+/* --- CARDS & SECTIONS --- */
+body.planetarium-theme .jn-post,
+body.planetarium-theme .hub-card,
+body.planetarium-theme .gallery-card,
+body.planetarium-theme .notice {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+body.planetarium-theme .jn-post__title a,
+body.planetarium-theme .hub-card__title,
+body.planetarium-theme .gallery-card__title {
+  color: #ffffff;
+}
+
+body.planetarium-theme .jn-post__date {
+  color: #4cc9f0;
+}
+
+body.planetarium-theme .jn-post__excerpt,
+body.planetarium-theme .hub-card__sub {
+  color: #b0c4de;
+}
+
+/* Override the dynamic inline colors for the hub cards */
+body.planetarium-theme .hub-card {
+  --hub-color: #4cc9f0 !important;
+}
+
+body.planetarium-theme .hub-card__content {
+  border-top-color: #4cc9f0;
+}
+
+body.planetarium-theme .hub-card__arrow,
+body.planetarium-theme .hub-card__count {
+  color: #4cc9f0;
+}
+
+/* --- PAGE HEADERS & BREADCRUMBS --- */
+body.planetarium-theme .page-header__title {
+  color: #4cc9f0;
+  text-shadow: 0 0 20px rgba(76, 201, 240, 0.4);
+}
+
+body.planetarium-theme .page-header__lead {
+  color: #b0c4de;
+}
+
+body.planetarium-theme .breadcrumb a,
+body.planetarium-theme .breadcrumb span {
+  color: #4cc9f0;
+}
+
+/* --- BUTTONS --- */
+body.planetarium-theme .btn--primary {
+  background: #4cc9f0;
+  color: #0b132b;
+  box-shadow: 0 4px 15px rgba(76, 201, 240, 0.3);
+}
+
+body.planetarium-theme .btn--primary:hover {
+  background: #ffffff;
+  box-shadow: 0 6px 20px rgba(76, 201, 240, 0.5);
+}
+
+body.planetarium-theme .btn--ghost {
+  color: #4cc9f0;
+  border-color: #4cc9f0;
+}
+
+body.planetarium-theme .btn--ghost:hover {
+  background: #4cc9f0;
+  color: #0b132b;
+}
+
+/* --- GALLERY / LIGHTBOX --- */
+body.planetarium-theme .album-grid__item {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+body.planetarium-theme .pagination__num,
+body.planetarium-theme .pagination__arrow {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+body.planetarium-theme .pagination__num:hover,
+body.planetarium-theme .pagination__arrow:hover,
+body.planetarium-theme .pagination__num.is-current {
+  background: #4cc9f0;
+  color: #0b132b;
+}
+
+/* ================================
+   FOOTER (PLANETARIUM DARK)
+================================ */
+
+body.planetarium-theme .footer-main {
+  background: #0a1f38; /* Very dark space blue */
+  color: #e0e1dd;
+  padding: clamp(44px, 6vw, 72px) var(--gutter) clamp(32px, 5vw, 56px);
+  border-top: 4px solid var(--crimson);
+}
+
+body.planetarium-theme .footer-column h2 {
+  color: var(--orange-soft);
+}
+
+body.planetarium-theme .footer-column h2::after {
+  background: var(--crimson);
+}
+
+body.planetarium-theme .footer-column a,
+body.planetarium-theme .footer-column address {
+  color: #b0c4de;
+}
+
+body.planetarium-theme .footer-column a:hover {
+  color: var(--crimson); /* Red hover */
+}
+
+body.planetarium-theme .footer-column .footer-phone {
+  color: var(--crimson); /* Red phone number */
+}
+
+body.planetarium-theme .footer-partners {
+  background: #132a4c;
+  box-shadow: inset 0 0 0 2px rgba(179, 18, 58, 0.3);
+}
+
+body.planetarium-theme .footer-bottom {
+  background: #051021;
+}
+
+body.planetarium-theme .footer-legal a {
+  color: var(--orange-soft);
+}
+
+body.planetarium-theme .footer-legal a:hover {
+  color: var(--crimson);
+}
+
+/* ================================
+   PLANETARIUM PRICES
+================================ */
+
+.price-content-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.price-heading {
+  color: #4cc9f0 !important;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  margin: 48px 0 24px !important;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(76, 201, 240, 0.3);
+}
+
+.price-heading:first-child {
+  margin-top: 0 !important;
+}
+
+/* Noteikumu poga */
+.price-btn {
+  margin-bottom: 24px;
+}
+
+/* Saraksts ar rezervācijas info */
+.price-content-wrap ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px 0;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px 24px;
+}
+
+.price-content-wrap ul li {
+  position: relative;
+  padding-left: 24px;
+  margin-bottom: 12px;
+  color: #b0c4de;
+  font-size: 1.05rem;
+}
+
+.price-content-wrap ul li:last-child {
+  margin-bottom: 0;
+}
+
+.price-content-wrap ul li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #4cc9f0;
+  font-weight: bold;
+}
+
+.price-content-wrap p {
+  color: #b0c4de;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.price-content-wrap em {
+  color: #ffffff;
+  background: rgba(76, 201, 240, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-style: normal;
+}
+
+/* Tabulas */
+.price-table-wrap {
+  margin-bottom: 48px;
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.price-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.03);
+  text-align: left;
+}
+
+.price-table th,
+.price-table td {
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #e0e1dd;
+}
+
+.price-table tr:last-child td {
+  border-bottom: none;
+}
+
+.price-table tr:hover td {
+  background: rgba(76, 201, 240, 0.05);
+}
+
+/* Galvene */
+.price-table tr:first-child td {
+  background: #132a4c;
+  color: #4cc9f0;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #4cc9f0;
+}
+
+/* Pirmā kolonna (nosaukumi) */
+.price-table td:first-child {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Otrā kolonna (cena) */
+.price-table td:nth-child(2) {
+  font-weight: 800;
+  color: #ffffff;
+}
+
+/* Trešā kolonna (ar ventiem) */
+.price-table td:nth-child(3) {
+  color: #b0c4de;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+  .price-table th,
+  .price-table td {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+/* ================================
+   PLANETARIUM SINGLE POST OVERRIDES
+================================ */
+
+body.planetarium-theme {
+  background-color: #0b132b !important;
+  background-image:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(76, 201, 240, 0.15),
+      transparent 40%
+    ),
+    radial-gradient(circle at 85% 80%, rgba(114, 9, 183, 0.2), transparent 50%) !important;
+}
+
+body.planetarium-theme .single-post__header {
+  background-color: #0b132b !important;
+  border-bottom: 2px solid #4cc9f0;
+}
+
+body.planetarium-theme .single-post__title {
+  color: #4cc9f0 !important;
+}
+
+body.planetarium-theme .single-post__date {
+  color: #4cc9f0 !important;
+  border-color: #4cc9f0 !important;
+}
+
+body.planetarium-theme .single-post__content {
+  color: #e0e1dd !important;
+}
+
+body.planetarium-theme .single-post__content h2,
+body.planetarium-theme .single-post__content h3 {
+  color: #ffffff !important;
+}
+
+body.planetarium-theme .single-post__content a {
+  color: #4cc9f0 !important;
+}
+
+body.planetarium-theme .single-post__hero-img {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  border: 1px solid rgba(76, 201, 240, 0.3) !important;
+}
+
+body.planetarium-theme .single-post__back {
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+body.planetarium-theme .single-post__source {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #b0c4de !important;
+}
+
+body.planetarium-theme .single-post__source:hover {
+  background: #4cc9f0 !important;
+  color: #0b132b !important;
 }
