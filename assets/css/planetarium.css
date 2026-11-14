@@ -1,0 +1,257 @@
+body.planetarium-theme .brand__logo {
+  height: 44px;
+  max-width: 220px;
+}
+
+body.planetarium-theme {
+  --accent: #38bdf8;
+  --accent-bright: #7dd3fc;
+  --accent-strong: #38bdf8;
+  --accent-on: #04121f;
+  --accent-soft: rgba(56, 189, 248, 0.16);
+  --accent-tint: rgba(56, 189, 248, 0.08);
+
+  --ink: #eaf5ff;
+  --ink-soft: #b9d3ec;
+  --muted: #93b1d1;
+  --bg: #071426;
+  --surface: #0e2036;
+  --surface-2: #122a45;
+  --cream: #0e2036;
+  --line: rgba(125, 211, 252, 0.16);
+  --line-strong: rgba(125, 211, 252, 0.32);
+
+  --header-bg: rgba(7, 20, 38, 0.82);
+  --header-text: #dbeafe;
+  --footer-bg: #081527;
+  --footer-bg-deep: #050e1c;
+  --footer-text: #dbeafe;
+  --footer-muted: #8fa9c9;
+  --footer-heading: #7dd3fc;
+  --footer-line: rgba(125, 211, 252, 0.16);
+
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-hover: 0 18px 44px rgba(0, 0, 0, 0.55);
+  --shadow-strong: 0 24px 60px rgba(0, 0, 0, 0.6);
+  --glow: rgba(56, 189, 248, 0.35);
+
+  --orange: var(--accent);
+  --orange-bright: #7dd3fc;
+  --orange-soft: #bae6fd;
+  --orange-pale: var(--accent-soft);
+  --crimson: var(--accent);
+  --crimson-deep: var(--ink-soft);
+  --crimson-darkest: var(--ink);
+
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 12% 0%, rgba(56, 189, 248, 0.16), transparent 42%),
+    radial-gradient(circle at 88% 16%, rgba(99, 102, 241, 0.16), transparent 46%),
+    radial-gradient(circle at 50% 100%, rgba(14, 165, 233, 0.1), transparent 55%),
+    url('data:image/svg+xml;utf8,<svg width="260" height="260" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="24" r="1" fill="%23ffffff" opacity="0.35"/><circle cx="70" cy="110" r="1.5" fill="%23ffffff" opacity="0.4"/><circle cx="150" cy="46" r="1" fill="%23ffffff" opacity="0.25"/><circle cx="226" cy="128" r="2" fill="%23ffffff" opacity="0.35"/><circle cx="110" cy="200" r="1" fill="%23ffffff" opacity="0.3"/><circle cx="196" cy="220" r="1.2" fill="%23ffffff" opacity="0.25"/></svg>');
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat;
+  background-size: auto, auto, auto, 260px 260px;
+  background-attachment: fixed;
+  color: var(--ink-soft);
+}
+
+body.planetarium-theme h1,
+body.planetarium-theme h2,
+body.planetarium-theme h3 {
+  color: var(--ink);
+}
+
+body.planetarium-theme .skip-link {
+  background: var(--accent);
+  color: var(--accent-on);
+}
+
+body.planetarium-theme .jn-post,
+body.planetarium-theme .hub-card,
+body.planetarium-theme .gallery-card,
+body.planetarium-theme .album-grid__item,
+body.planetarium-theme .notice,
+body.planetarium-theme .price-content-wrap ul,
+body.planetarium-theme .price-table-wrap {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.02)
+  );
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+body.planetarium-theme .jn-post__title a,
+body.planetarium-theme .hub-card__title,
+body.planetarium-theme .gallery-card__title {
+  color: var(--ink);
+}
+
+body.planetarium-theme .jn-post__date {
+  color: var(--accent-bright);
+}
+
+body.planetarium-theme .jn-post__excerpt,
+body.planetarium-theme .hub-card__sub {
+  color: var(--ink-soft);
+}
+
+body.planetarium-theme .jn-post__more {
+  color: var(--accent-bright);
+}
+
+body.planetarium-theme .section__head h2::after {
+  background: linear-gradient(90deg, var(--accent-bright), var(--accent));
+}
+
+body.planetarium-theme .jn-all-link {
+  background: var(--accent);
+  color: var(--accent-on);
+  box-shadow: 0 8px 22px var(--glow);
+}
+
+body.planetarium-theme .jn-all-link:hover {
+  background: var(--accent-bright);
+  color: var(--accent-on);
+}
+
+body.planetarium-theme .hub-card {
+  --hub-color: var(--accent) !important;
+}
+
+body.planetarium-theme .hub-card__content {
+  border-top-color: var(--accent);
+}
+
+body.planetarium-theme .hub-card__arrow,
+body.planetarium-theme .hub-card__count {
+  color: var(--accent-bright);
+}
+
+body.planetarium-theme .section__head h2,
+body.planetarium-theme .page-header__title {
+  color: var(--ink);
+}
+
+body.planetarium-theme .section__head p,
+body.planetarium-theme .page-header__lead {
+  color: var(--ink-soft);
+}
+
+body.planetarium-theme .page-header {
+  position: relative;
+  padding-top: clamp(48px, 6vw, 80px);
+  padding-bottom: clamp(20px, 3vw, 32px);
+}
+
+body.planetarium-theme .page-header__title {
+  text-shadow: 0 0 32px rgba(56, 189, 248, 0.35);
+}
+
+body.planetarium-theme .breadcrumb,
+body.planetarium-theme .breadcrumb a,
+body.planetarium-theme .breadcrumb span {
+  color: var(--accent-bright);
+}
+
+body.planetarium-theme .btn--primary {
+  background: var(--accent);
+  color: var(--accent-on);
+  box-shadow: 0 8px 22px var(--glow);
+}
+
+body.planetarium-theme .btn--primary:hover {
+  background: var(--accent-bright);
+  color: var(--accent-on);
+}
+
+body.planetarium-theme .btn--ghost {
+  color: var(--accent-bright);
+  border-color: var(--line-strong);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+body.planetarium-theme .btn--ghost:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-on);
+}
+
+body.planetarium-theme .pagination__num,
+body.planetarium-theme .pagination__arrow {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+body.planetarium-theme .pagination__num:hover,
+body.planetarium-theme .pagination__arrow:hover,
+body.planetarium-theme .pagination__num.is-current {
+  background: var(--accent);
+  color: var(--accent-on);
+  border-color: var(--accent);
+}
+
+body.planetarium-theme .pagination__meta,
+body.planetarium-theme .pagination__gap {
+  color: var(--muted);
+}
+
+body.planetarium-theme .single-post__header {
+  background: linear-gradient(180deg, #0c233c, #071426);
+  border-bottom: 1px solid var(--line);
+}
+
+body.planetarium-theme .single-post__title {
+  color: var(--ink);
+}
+
+body.planetarium-theme .single-post__date {
+  color: var(--accent-bright);
+  border-color: var(--accent);
+}
+
+body.planetarium-theme .single-post__content {
+  color: var(--ink-soft);
+}
+
+body.planetarium-theme .single-post__content h2,
+body.planetarium-theme .single-post__content h3 {
+  color: var(--ink);
+}
+
+body.planetarium-theme .single-post__content a {
+  color: var(--accent-bright);
+}
+
+body.planetarium-theme .single-post__hero-img {
+  box-shadow: var(--shadow-strong);
+  border: 1px solid var(--line);
+}
+
+body.planetarium-theme .single-post__back {
+  border-top: 1px solid var(--line);
+}
+
+body.planetarium-theme .single-post__source {
+  background: var(--surface);
+  color: var(--ink-soft);
+}
+
+body.planetarium-theme .single-post__source:hover {
+  background: var(--accent);
+  color: var(--accent-on);
+}
+
+body.planetarium-theme .notice {
+  border-left: 4px solid var(--accent);
+  color: var(--ink-soft);
+}
+
+@media (max-width: 600px) {
+  body.planetarium-theme .brand__logo {
+    height: 36px;
+    max-width: 150px;
+  }
+}

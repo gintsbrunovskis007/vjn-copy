@@ -3,7 +3,7 @@
  * Template Name: Par mums
  */
 
-$hero_img = 'https://jaunradesnams.lv/wp-content/uploads/jnams-1200x666.jpg';
+$hero_img = jn_asset( 'img/hero-1200.jpg' );
 
 get_header();
 ?>
@@ -13,11 +13,15 @@ get_header();
     <section class="about-hero" aria-labelledby="page-title"
              style="--hero-image: url('<?php echo esc_url( $hero_img ); ?>');">
         <div class="container">
-            <nav class="breadcrumb breadcrumb--light" aria-label="Atrašanās vieta">
-                <a href="<?php echo esc_url( home_url( '/' ) ); ?>">Sākums</a>
-                <span aria-hidden="true">/</span>
-                <span aria-current="page">Par mums</span>
-            </nav>
+            <?php
+            jn_breadcrumb_render(
+                array(
+                    array( 'name' => 'Sākums', 'url' => home_url( '/' ) ),
+                    array( 'name' => 'Par mums', 'url' => '' ),
+                ),
+                'breadcrumb breadcrumb--light'
+            );
+            ?>
             <h1 id="page-title" class="about-hero__title">Par mums</h1>
             <p class="about-hero__lead">
                 Ventspils Jaunrades nams — vieta, kur bērni un jaunieši atklāj sevi jau kopš 1955. gada.
