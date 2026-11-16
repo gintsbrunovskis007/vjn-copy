@@ -54,14 +54,18 @@ $nav_items    = $is_planetarium ? jn_planetarium_nav_items() : jn_nav_items();
 			<a class="theme-switch" href="<?php echo esc_url( $switch_url ); ?>" aria-label="<?php echo esc_attr( $switch_label ); ?>">
 				<?php if ( $is_planetarium ) : ?>
 					<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<circle cx="12" cy="12" r="4"></circle>
-						<path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"></path>
+						<circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle>
+						<circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle>
+						<circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle>
+						<circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle>
+						<path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path>
 					</svg>
 				<?php else : ?>
 					<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<circle cx="12" cy="12" r="9"></circle>
-						<path d="M3 12h18"></path>
-						<path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"></path>
+						<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
+						<path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
+						<path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path>
+						<path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path>
 					</svg>
 				<?php endif; ?>
 				<span class="theme-switch__label"><?php echo esc_html( $switch_label ); ?></span>

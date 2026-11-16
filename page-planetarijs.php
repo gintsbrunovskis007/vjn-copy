@@ -6,57 +6,37 @@ get_header();
 ?>
 
 <main id="main" class="site-main" tabindex="-1">
-	<section class="page-header" aria-labelledby="page-title">
-		<div class="container">
-			<?php
-			jn_breadcrumb_render(
-				array(
-					array( 'name' => 'Sākums', 'url' => home_url( '/' ) ),
-					array( 'name' => 'Planetārijs', 'url' => '' ),
-				)
-			);
-			?>
-			<h1 id="page-title" class="page-header__title">Planetārijs un Observatorija</h1>
-			<p class="page-header__lead">Baltijā modernākais digitālais planetārijs un observatorija ar modernu teleskopu.</p>
-		</div>
-	</section>
-
-	<section class="section">
-		<div class="container">
-			<div class="hub-grid hub-grid--planet">
-				<a class="hub-card hub-card--no-image" href="<?php echo esc_url( home_url( '/planetarijs/aktualitates/' ) ); ?>">
-					<div class="hub-card__content">
-						<h2 class="hub-card__title">Aktualitātes</h2>
-						<p class="hub-card__sub">Jaunākās ziņas un notikumi</p>
-						<span class="hub-card__arrow" aria-hidden="true">→</span>
-					</div>
-				</a>
-				<a class="hub-card hub-card--no-image" href="<?php echo esc_url( home_url( '/planetarijs/galerija/' ) ); ?>">
-					<div class="hub-card__content">
-						<h2 class="hub-card__title">Galerija</h2>
-						<p class="hub-card__sub">Foto no pasākumiem un observatorijas</p>
-						<span class="hub-card__arrow" aria-hidden="true">→</span>
-					</div>
-				</a>
-				<a class="hub-card hub-card--no-image" href="<?php echo esc_url( home_url( '/planetarijs/seansu-laiki/' ) ); ?>">
-					<div class="hub-card__content">
-						<h2 class="hub-card__title">Seansu laiki</h2>
-						<p class="hub-card__sub">Apskati filmu un observatorijas grafiku</p>
-						<span class="hub-card__arrow" aria-hidden="true">→</span>
-					</div>
-				</a>
-				<a class="hub-card hub-card--no-image" href="<?php echo esc_url( home_url( '/planetarijs/cenas/' ) ); ?>">
-					<div class="hub-card__content">
-						<h2 class="hub-card__title">Biļešu cenas</h2>
-						<p class="hub-card__sub">Informācija par biļešu iegādi</p>
-						<span class="hub-card__arrow" aria-hidden="true">→</span>
-					</div>
-				</a>
+	<div class="planetarium-hero">
+		<section class="page-header" aria-labelledby="page-title">
+			<div class="container">
+				<?php
+				jn_breadcrumb_render(
+					array(
+						array( 'name' => 'Sākums', 'url' => home_url( '/' ) ),
+						array( 'name' => 'Planetārijs', 'url' => '' ),
+					)
+				);
+				?>
+				<h1 id="page-title" class="page-header__title">Planetārijs un Observatorija</h1>
+				<p class="page-header__lead page-header__lead--single-line">Baltijā modernākais digitālais planetārijs un observatorija ar modernu teleskopu.</p>
 			</div>
-		</div>
-	</section>
+		</section>
 
-	<section class="section">
+		<section class="section planetarium-hero__visual">
+			<div class="container">
+				<div class="planetarium-icon" aria-hidden="true">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+						<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
+						<path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
+						<path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path>
+						<path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path>
+					</svg>
+				</div>
+			</div>
+		</section>
+	</div>
+
+	<section class="section section--latest-news">
 		<div class="container">
 			<div class="section__head section__head--left">
 				<h2>Jaunākās aktualitātes</h2>

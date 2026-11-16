@@ -38,7 +38,7 @@ get_header();
 								</p>
 								<h2 class="jn-post__title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
 								<p class="jn-post__excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 24 ) ); ?></p>
-								<span class="jn-post__more" aria-hidden="true">Lasīt vairāk</span>
+								<span class="jn-post__more" aria-hidden="true"><span class="jn-post__more-label">Lasīt vairāk</span></span>
 							</div>
 						</article>
 					<?php endwhile; ?>

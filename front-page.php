@@ -8,6 +8,9 @@ $news_url = home_url( '/jaunrades-nams/aktualitates/' );
 
 <main id="main" class="site-main" tabindex="-1">
 
+	<div class="site-effect" aria-hidden="true"
+		style="background-image: url('<?php echo esc_url( jn_asset( 'effect.svg' ) ); ?>');"></div>
+
 	<section class="hero" aria-labelledby="hero-title">
 		<div class="hero__inner">
 			<div class="hero__content">
@@ -50,10 +53,6 @@ $news_url = home_url( '/jaunrades-nams/aktualitates/' );
 						loading="eager"
 						fetchpriority="high"
 						decoding="async">
-				</div>
-				<div class="hero__badge">
-					<strong>1955</strong>
-					<span>Darbojamies kopš</span>
 				</div>
 			</div>
 		</div>

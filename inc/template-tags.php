@@ -35,10 +35,12 @@ function jn_pagination_render( $current, $total, $url_cb, $show_meta = true ) {
 	<nav class="pagination" aria-label="Lapu navigācija">
 		<?php if ( $current > 1 ) : ?>
 			<a class="pagination__arrow" href="<?php echo esc_url( call_user_func( $url_cb, $current - 1 ) ); ?>" rel="prev" aria-label="Iepriekšējā lapa">
-				<span aria-hidden="true">←</span>
+				<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
 			</a>
 		<?php else : ?>
-			<span class="pagination__arrow is-disabled" aria-hidden="true">←</span>
+			<span class="pagination__arrow is-disabled" aria-hidden="true">
+				<svg viewBox="0 0 24 24" width="20" height="20" focusable="false"><path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			</span>
 		<?php endif; ?>
 
 		<?php foreach ( $range as $p ) : ?>
@@ -58,10 +60,12 @@ function jn_pagination_render( $current, $total, $url_cb, $show_meta = true ) {
 
 		<?php if ( $current < $total ) : ?>
 			<a class="pagination__arrow" href="<?php echo esc_url( call_user_func( $url_cb, $current + 1 ) ); ?>" rel="next" aria-label="Nākamā lapa">
-				<span aria-hidden="true">→</span>
+				<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
 			</a>
 		<?php else : ?>
-			<span class="pagination__arrow is-disabled" aria-hidden="true">→</span>
+			<span class="pagination__arrow is-disabled" aria-hidden="true">
+				<svg viewBox="0 0 24 24" width="20" height="20" focusable="false"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			</span>
 		<?php endif; ?>
 	</nav>
 
@@ -165,7 +169,7 @@ function jn_post_card( $post, $args = array() ) {
 				<p class="jn-post__excerpt"><?php echo esc_html( $excerpt ); ?></p>
 			<?php endif; ?>
 
-			<span class="jn-post__more" aria-hidden="true">Lasīt vairāk</span>
+			<span class="jn-post__more" aria-hidden="true"><span class="jn-post__more-label">Lasīt vairāk</span></span>
 		</div>
 	</article>
 	<?php
@@ -369,8 +373,12 @@ function jn_lightbox_markup() {
 	?>
 	<div class="jn-lightbox" id="jn-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Galerijas slaidrāde">
 		<button class="jn-lightbox__close" type="button" aria-label="Aizvērt">×</button>
-		<button class="jn-lightbox__nav jn-lightbox__nav--prev" type="button" aria-label="Iepriekšējais">‹</button>
-		<button class="jn-lightbox__nav jn-lightbox__nav--next" type="button" aria-label="Nākamais">›</button>
+		<button class="jn-lightbox__nav jn-lightbox__nav--prev" type="button" aria-label="Iepriekšējais">
+			<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+		</button>
+		<button class="jn-lightbox__nav jn-lightbox__nav--next" type="button" aria-label="Nākamais">
+			<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+		</button>
 		<figure class="jn-lightbox__figure">
 			<img class="jn-lightbox__img" src="" alt="">
 		</figure>

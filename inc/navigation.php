@@ -10,7 +10,7 @@ function jn_nav_items() {
 		array( 'slug' => 'galerija', 'path' => '/jaunrades-nams/galerija/', 'label' => 'Galerija' ),
 		array( 'slug' => 'dokumenti', 'path' => '/jaunrades-nams/dokumenti/', 'label' => 'Resursi' ),
 		array( 'slug' => 'par-mums', 'path' => '/jaunrades-nams/par-mums/', 'label' => 'Par mums' ),
-		array( 'slug' => 'kontakti', 'path' => '/jaunrades-nams/kontakti/', 'label' => 'Kontakti', 'class' => 'nav-contact' ),
+		array( 'slug' => 'kontakti', 'path' => '/jaunrades-nams/kontakti/', 'label' => 'Kontakti' ),
 	);
 	return apply_filters( 'jn_nav_items', $items );
 }

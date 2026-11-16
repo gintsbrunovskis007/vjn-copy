@@ -149,6 +149,53 @@ body.planetarium-theme .page-header__title {
   text-shadow: 0 0 32px rgba(56, 189, 248, 0.35);
 }
 
+body.planetarium-theme .page-header__lead--single-line {
+  max-width: none;
+  white-space: nowrap;
+  font-size: clamp(0.7rem, calc((100vw - 4 * var(--gutter)) / 46), 1.0625rem);
+}
+
+@media (max-width: 600px) {
+  body.planetarium-theme .page-header__lead--single-line {
+    white-space: normal;
+    font-size: 1rem;
+  }
+}
+
+body.planetarium-theme .planetarium-icon {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(8px, 2vw, 24px);
+  color: var(--accent-bright);
+}
+
+body.planetarium-theme .planetarium-icon svg {
+  width: clamp(96px, 14vw, 160px);
+  height: auto;
+  filter: drop-shadow(0 0 24px var(--glow));
+}
+
+body.planetarium-theme .planetarium-hero {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--header-h));
+  min-height: calc(100lvh - var(--header-h));
+}
+
+body.planetarium-theme .planetarium-hero__visual {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+}
+
+body.planetarium-theme .planetarium-hero__visual > .container {
+  width: 100%;
+}
+
+body.planetarium-theme .section--latest-news {
+  padding-top: clamp(56px, 8vw, 96px);
+}
+
 body.planetarium-theme .breadcrumb,
 body.planetarium-theme .breadcrumb a,
 body.planetarium-theme .breadcrumb span {
@@ -205,6 +252,30 @@ body.planetarium-theme .single-post__header {
 
 body.planetarium-theme .single-post__title {
   color: var(--ink);
+}
+
+body.planetarium-theme .single-post__header--with-image::after {
+  background: linear-gradient(
+    180deg,
+    rgba(12, 35, 60, 0.72),
+    rgba(7, 20, 38, 0.95)
+  );
+}
+
+body.planetarium-theme .single-post__header--with-image .single-post__title {
+  color: var(--white);
+}
+
+body.planetarium-theme .single-post__header .breadcrumb--light {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+body.planetarium-theme .single-post__header .breadcrumb--light a {
+  color: #bae6fd;
+}
+
+body.planetarium-theme .single-post__header .breadcrumb--light a:hover {
+  color: var(--white);
 }
 
 body.planetarium-theme .single-post__date {

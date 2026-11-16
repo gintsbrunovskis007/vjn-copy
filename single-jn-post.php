@@ -23,15 +23,26 @@ $content = preg_replace( '#<p>\s*Publicēts?:.*?</p>#is', '', $content );
 $content = preg_replace( '~<p>\s*(?:&nbsp;|\s)*</p>~i', '', $content );
 
 $categories          = array_map( 'intval', (array) ( $post['categories'] ?? array() ) );
-$is_planetarium_post = in_array( 7, $categories, true );
+$is_repertuar_post   = (bool) array_intersect( $categories, array( 9, 15, 16 ) );
+$is_planetarium_post = in_array( 7, $categories, true ) || $is_repertuar_post;
 
 if ( $is_planetarium_post ) {
 	$GLOBALS['is_planetarium_post'] = true;
 }
 
-$back_url  = $is_planetarium_post ? home_url( '/planetarijs/aktualitates/' ) : home_url( '/jaunrades-nams/aktualitates/' );
-$back_text = $is_planetarium_post ? '← Atpakaļ uz Planetārija aktualitātēm' : '← Atpakaļ uz aktualitātēm';
-$cat_name  = $is_planetarium_post ? 'Planetārijs' : 'Aktualitātes';
+if ( $is_repertuar_post ) {
+	$back_url  = home_url( '/planetarijs/repertuars/' );
+	$back_text = '← Atpakaļ uz repertuāru';
+	$cat_name  = 'Repertuārs';
+} elseif ( $is_planetarium_post ) {
+	$back_url  = home_url( '/planetarijs/aktualitates/' );
+	$back_text = '← Atpakaļ uz Planetārija aktualitātēm';
+	$cat_name  = 'Planetārijs';
+} else {
+	$back_url  = home_url( '/jaunrades-nams/aktualitates/' );
+	$back_text = '← Atpakaļ uz aktualitātēm';
+	$cat_name  = 'Aktualitātes';
+}
 
 get_header();
 ?>

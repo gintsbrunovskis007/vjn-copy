@@ -18,10 +18,8 @@ add_action(
 		wp_enqueue_script( 'jn-theme', jn_asset( 'theme.js' ), array(), $version, true );
 		wp_script_add_data( 'jn-theme', 'strategy', 'defer' );
 
-		if ( is_page_template( array( 'page-galerija.php', 'page-planetarijs-galerija.php' ) ) ) {
-			wp_enqueue_script( 'jn-lightbox', jn_asset( 'lightbox.js' ), array(), $version, true );
-			wp_script_add_data( 'jn-lightbox', 'strategy', 'defer' );
-		}
+		wp_enqueue_script( 'jn-lightbox', jn_asset( 'lightbox.js' ), array(), $version, true );
+		wp_script_add_data( 'jn-lightbox', 'strategy', 'defer' );
 	},
 	20
 );

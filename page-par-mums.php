@@ -40,7 +40,7 @@ get_header();
 
             <div class="about-stats">
                 <div class="about-stat">
-                    <span class="about-stat__num">1955</span>
+                    <span class="about-stat__num">1955. gads</span>
                     <span class="about-stat__label">Dibināšanas gads</span>
                 </div>
                 <div class="about-stat">
@@ -52,7 +52,7 @@ get_header();
                     <span class="about-stat__label">Audzēkņu vecums</span>
                 </div>
                 <div class="about-stat">
-                    <span class="about-stat__num">2010</span>
+                    <span class="about-stat__num">2010. gads</span>
                     <span class="about-stat__label">Jaunās telpās</span>
                 </div>
             </div>

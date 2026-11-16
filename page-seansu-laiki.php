@@ -6,12 +6,14 @@ if ( '' !== $content ) {
 	$content = preg_replace( '~<div[^>]*class="[^"]*fusion-clearfix[^"]*"[^>]*>\s*</div>~is', '', $content );
 	$content = preg_replace( '~<div[^>]*class="[^"]*fusion-layout-column[^"]*"[^>]*>\s*<div[^>]*class="[^"]*fusion-column-wrapper[^"]*"[^>]*>\s*</div>\s*</div>~is', '', $content );
 	$content = preg_replace( '~<div[^>]*class="[^"]*fusion-button-wrapper[^"]*"[^>]*>.*?<a[^>]*href="([^"]+)"[^>]*>.*?<span[^>]*>(.*?)</span>.*?</a>.*?</div>~is', '<div class="schedule-btn-wrap"><a href="$1" class="btn btn--primary" target="_blank" rel="noopener">$2</a></div>', $content );
-	$content = preg_replace( '~<p[^>]*>\s*<strong>(Pirmdiena-slēgts|Otrdiena – piektdiena|Sestdiena – svētdiena)<\/strong>(.*?)<\/p>~is', '<h3 class="schedule-day">$1 $2</h3>', $content );
-	$content = preg_replace( '~<p[^>]*>\s*<strong>Pirmdiena-slēgts<\/strong>(.*?)<br>\s*<strong>Otrdiena – piektdiena<\/strong>(.*?)<\/p>~is', '<h3 class="schedule-day">Pirmdiena - slēgts</h3><h3 class="schedule-day">Otrdiena – piektdiena</h3>', $content );
+	$content = preg_replace( '~<p[^>]*>\s*<strong>\s*Pirmdiena\s*[-–]\s*slēgts\s*<br\s*/?>\s*Otrdiena\s*[-–]\s*piektdiena\s*</strong>\s*:?\s*</p>~iu', '<h3 class="schedule-day schedule-day--closed">Pirmdiena – slēgts</h3><h3 class="schedule-day">Otrdiena – piektdiena</h3>', $content );
+	$content = preg_replace( '~<p[^>]*>\s*<strong>\s*(Sestdiena\s*[-–]\s*svētdiena)\s*</strong>\s*:?\s*(?:&nbsp;|\s)*</p>~iu', '<h3 class="schedule-day">$1</h3>', $content );
 	$content = preg_replace( '~<strong><u>(\d{2}:\d{2})<\/u>.*?<\/strong>~is', '<span class="schedule-time">$1</span>', $content );
 	$content = preg_replace( '~<span[^>]*text-decoration:\s*underline;?[^>]*><strong>(\d{2}:\d{2})<\/strong><\/span>~is', '<span class="schedule-time">$1</span>', $content );
-	$content = preg_replace( '~<span class="has-inline-color has-vivid-red-color">\*<\/span>~is', '<span class="schedule-star">*</span>', $content );
-	$content = preg_replace( '~<span class="has-inline-color has-vivid-red-color">(Jaunums!)<\/span>~is', '<span class="schedule-new">$1</span>', $content );
+	$content = preg_replace( '~<span class="has-inline-color has-vivid-red-color">\s*(Jaunums!)\s*<\/span>~is', '<span class="schedule-new">$1</span>', $content );
+	$content = preg_replace( '~<span class="has-inline-color has-vivid-red-color">\s*\*\s*<\/span>~is', '', $content );
+	$content = preg_replace( '~(?<=Observatorija)\*~u', '', $content );
+	$content = preg_replace( '~<p([^>]*)>\s*\*\s*~iu', '<p$1>', $content );
 	$content = preg_replace( '~<p>\s*(?:&nbsp;|\s)*</p>~i', '', $content );
 	$content = wp_kses_post( $content );
 }

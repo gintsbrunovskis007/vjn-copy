@@ -184,17 +184,17 @@ function jn_teacher_fallback_html() {
 		<a href="https://docs.google.com/spreadsheets/d/1IjJe04ph9lnV-1Z_7w3X-Rcq1ZtuHrpN37pLJJ60QEY/edit#gid=15019426" target="_blank" rel="noopener">šeit</a>
 		vai ierakstot adresi <strong>ej.uz/VJNkalendars</strong></p>
 	<h3><strong>Faili skolotājiem:</strong></h3>
-	<a href="https://jaunradesnams.lv/wp-content/uploads/darba_kartibas_noteikumi_2026.pdf" class="teacher-btn" target="_blank" rel="noopener">📄 Darba kārtības noteikumi</a>
+	<a href="https://jaunradesnams.lv/wp-content/uploads/darba_kartibas_noteikumi_2026.pdf" class="teacher-btn" target="_blank" rel="noopener">• Darba kārtības noteikumi</a>
 	<p class="mt-24"><strong>Iesniegums audzēkņu uzņemšanai u.c. dokumenti</strong>
 		<a href="<?php echo esc_url( home_url( '/jaunrades-nams/dokumenti/' ) ); ?>">šeit</a></p>
 	<h3><strong>Pieprasījums ārpusnodarbību pasākumam:</strong></h3>
 	<p><em>Šie abi dokumenti ir saistoši pedagogiem, kuri vēlas rīkot pasākumus Jaunrades namā un arī ārpus tā. Tehniskais pieteikums jāiesniedz ne vēlāk kā mēnesi pirms pasākuma, bet programmas pieteikums – ne vēlāk kā trīs darba dienas pēc pasākuma.</em></p>
-	<a href="https://jaunradesnams.lv/wp-content/uploads/programmas_pazinojums_AKKA-LAA.doc" class="teacher-btn" target="_blank" rel="noopener">📄 Programmas paziņojums</a>
-	<a href="https://jaunradesnams.lv/wp-content/uploads/tehniskais_pieteikums_JN_kolektiviem.docx" class="teacher-btn" target="_blank" rel="noopener">📄 Pasākuma tehniskais pieteikums</a>
+	<a href="https://jaunradesnams.lv/wp-content/uploads/programmas_pazinojums_AKKA-LAA.doc" class="teacher-btn" target="_blank" rel="noopener">• Programmas paziņojums</a>
+	<a href="https://jaunradesnams.lv/wp-content/uploads/tehniskais_pieteikums_JN_kolektiviem.docx" class="teacher-btn" target="_blank" rel="noopener">• Pasākuma tehniskais pieteikums</a>
 	<h3><strong>Dokumenti komandējumiem:</strong></h3>
-	<a href="https://jaunradesnams.lv/wp-content/uploads/komandejuma_pieprasijums_1.docx" class="teacher-btn" target="_blank" rel="noopener">📄 Komandējuma pieprasījums</a>
-	<a href="https://jaunradesnams.lv/wp-content/uploads/transporta_pieprasijums_2026_1.docx" class="teacher-btn" target="_blank" rel="noopener">📄 Transporta pieprasījums</a>
-	<a href="https://jaunradesnams.lv/wp-content/uploads/komandejuma_parskats_2026_1.doc" class="teacher-btn" target="_blank" rel="noopener">📄 Komandējuma pārskats</a>
+	<a href="https://jaunradesnams.lv/wp-content/uploads/komandejuma_pieprasijums_1.docx" class="teacher-btn" target="_blank" rel="noopener">• Komandējuma pieprasījums</a>
+	<a href="https://jaunradesnams.lv/wp-content/uploads/transporta_pieprasijums_2026_1.docx" class="teacher-btn" target="_blank" rel="noopener">• Transporta pieprasījums</a>
+	<a href="https://jaunradesnams.lv/wp-content/uploads/komandejuma_parskats_2026_1.doc" class="teacher-btn" target="_blank" rel="noopener">• Komandējuma pārskats</a>
 	<?php
 	return ob_get_clean();
 }

@@ -73,7 +73,7 @@ get_header();
 												<?php foreach ( $subgroup['files'] as $file ) : ?>
 													<li>
 														<a href="<?php echo esc_url( $file['url'] ); ?>" class="resursi-link" target="_blank" rel="noopener">
-															<span class="resursi-link__icon" aria-hidden="true">📄</span>
+															<span class="resursi-link__icon" aria-hidden="true">•</span>
 															<span class="resursi-link__text"><?php echo esc_html( $file['title'] ); ?></span>
 														</a>
 													</li>
@@ -98,7 +98,7 @@ get_header();
 						<?php foreach ( $documents as $document ) : ?>
 							<li>
 								<a href="<?php echo esc_url( $document['url'] ); ?>" class="teacher-btn" target="_blank" rel="noopener">
-									📄 <?php echo esc_html( $document['title'] ); ?>
+									• <?php echo esc_html( $document['title'] ); ?>
 								</a>
 							</li>
 						<?php endforeach; ?>
@@ -113,7 +113,7 @@ get_header();
 						<?php if ( $is_auth ) : ?>
 							<span class="resursi-accordion__badge">Piekļuve atvērta</span>
 						<?php else : ?>
-							<span class="resursi-accordion__badge resursi-accordion__badge--locked">🔒 Nepieciešama parole</span>
+							<span class="resursi-accordion__badge resursi-accordion__badge--locked">Nepieciešama parole</span>
 						<?php endif; ?>
 					</h2>
 					<span class="resursi-accordion__icon" aria-hidden="true"></span>
@@ -121,7 +121,7 @@ get_header();
 				<div class="resursi-accordion__content">
 					<?php if ( ! $is_auth ) : ?>
 						<div class="teacher-login">
-							<div class="teacher-login__icon" aria-hidden="true">🔒</div>
+							<div class="teacher-login__icon" aria-hidden="true"></div>
 							<h3 class="teacher-login__title">Ierobežota piekļuve</h3>
 							<p class="teacher-login__desc">Lūdzu, ievadiet paroli, lai apskatītu informāciju pedagogiem.</p>
 
